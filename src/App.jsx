@@ -1,0 +1,117 @@
+import React, { useEffect } from 'react';
+import Globe from './components/Globe';
+import LayerPanel from './components/LayerPanel';
+import ShaderToolbar from './components/ShaderToolbar';
+import HoverTooltip from './components/HoverTooltip';
+import ShaderOverlay from './components/ShaderOverlay';
+import FocusMask from './components/FocusMask';
+import SysTerminal from './components/SysTerminal';
+import WebcamDock from './components/WebcamDock';
+import RenderBoundary from './components/RenderBoundary';
+import useStore from './store/useStore';
+import { SHADER_MODES } from './constants/dataSources';
+import IndustrialRuntime from './industrial/components/IndustrialRuntime';
+import TopBarIndustrial from './industrial/components/TopBarIndustrial';
+import SideNav from './industrial/components/SideNav';
+import SitePanel from './industrial/components/SitePanel';
+import DetailCard from './industrial/components/DetailCard';
+import AlertBanner from './industrial/components/AlertBanner';
+import KpiStrip, { ThermalLegend } from './industrial/components/KpiStrip';
+import './industrial/industrial.css';
+
+export default function App() {
+    const activeShader = useStore((s) => s.activeShader);
+    const globeViewMode = useStore((s) => s.globeViewMode);
+    const setShader = useStore((s) => s.setShader);
+    const setAppIsActive = useStore((s) => s.setAppIsActive);
+    const enableAllLayers = useStore((s) => s.enableAllLayers);
+    const enableSurveillanceLayers = useStore((s) => s.enableSurveillanceLayers);
+    const clearInspector = useStore((s) => s.clearInspector);
+    const clearTrackedTarget = useStore((s) => s.clearTrackedTarget);
+    const toggleFocusMode = useStore((s) => s.toggleFocusMode);
+    const focusHideEntities = useStore((s) => s.focusHideEntities);
+    const setFocusHideEntities = useStore((s) => s.setFocusHideEntities);
+
+    useEffect(() => {
+        const computeAppIsActive = () => {
+            if (typeof document === 'undefined') return true;
+            const isVisible = !document.hidden;
+            const hasFocus = typeof document.hasFocus === 'function' ? document.hasFocus() : true;
+            return Boolean(isVisible && hasFocus);
+        };
+        const syncAppActivity = () => setAppIsActive(computeAppIsActive());
+        syncAppActivity();
+        document.addEventListener('visibilitychange', syncAppActivity);
+        window.addEventListener('focus', syncAppActivity);
+        window.addEventListener('blur', syncAppActivity);
+        window.addEventListener('pageshow', syncAppActivity);
+        return () => {
+            document.removeEventListener('visibilitychange', syncAppActivity);
+            window.removeEventListener('focus', syncAppActivity);
+            window.removeEventListener('blur', syncAppActivity);
+            window.removeEventListener('pageshow', syncAppActivity);
+        };
+    }, [setAppIsActive]);
+
+    // 단축키: Shift+1~6 화면 모드, Shift+7 포커스, Shift+8 엔티티 숨김, Esc 선택 해제
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+            if (e.shiftKey) {
+                const keyNum = parseInt(String(e.code).replace('Digit', ''), 10);
+                if (keyNum >= 1 && keyNum <= SHADER_MODES.length) {
+                    const mode = SHADER_MODES[keyNum - 1];
+                    if (activeShader === mode.id) setShader('DEFAULT');
+                    else {
+                        setShader(mode.id);
+                        if (mode.id === 'GOD') enableAllLayers();
+                        else if (mode.id === 'SURVEILLANCE') enableSurveillanceLayers();
+                    }
+                } else if (keyNum === 7) toggleFocusMode();
+                else if (keyNum === 8) setFocusHideEntities(!focusHideEntities);
+            }
+            if (e.key === 'Escape') {
+                clearInspector();
+                clearTrackedTarget();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [activeShader, setShader, enableAllLayers, enableSurveillanceLayers, clearInspector, clearTrackedTarget, toggleFocusMode, focusHideEntities, setFocusHideEntities]);
+
+    const getGlobeModeClass = () => {
+        switch (activeShader) {
+            case 'NVG': return 'mode-nvg';
+            case 'FLIR': return 'mode-flir';
+            case 'CRT': return 'mode-crt';
+            default: return '';
+        }
+    };
+
+    return (
+        <div className={`godseye-app godseye-app--${globeViewMode}`} style={{ width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden', background: '#0a0a0f' }}>
+            <IndustrialRuntime />
+            <div className="globe-shell">
+                <div className={`globe-container ${getGlobeModeClass()}`}>
+                    <RenderBoundary name="globe"><Globe /></RenderBoundary>
+                </div>
+            </div>
+
+            <RenderBoundary name="shader-overlay"><ShaderOverlay /></RenderBoundary>
+            <RenderBoundary name="focus-mask"><FocusMask /></RenderBoundary>
+
+            <RenderBoundary name="top-bar"><TopBarIndustrial /></RenderBoundary>
+            <RenderBoundary name="alert-banner"><AlertBanner /></RenderBoundary>
+            <RenderBoundary name="side-nav"><SideNav /></RenderBoundary>
+            <RenderBoundary name="site-panel"><SitePanel /></RenderBoundary>
+            <RenderBoundary name="kpi-strip"><KpiStrip /></RenderBoundary>
+            <RenderBoundary name="detail-card"><DetailCard /></RenderBoundary>
+            <RenderBoundary name="thermal-legend"><ThermalLegend /></RenderBoundary>
+            <RenderBoundary name="layer-panel"><LayerPanel /></RenderBoundary>
+            <RenderBoundary name="shader-toolbar"><ShaderToolbar /></RenderBoundary>
+            <RenderBoundary name="hover-tooltip"><HoverTooltip /></RenderBoundary>
+            <RenderBoundary name="sys-terminal"><SysTerminal /></RenderBoundary>
+            <RenderBoundary name="webcam-dock"><WebcamDock /></RenderBoundary>
+        </div>
+    );
+}

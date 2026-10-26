@@ -1,0 +1,53 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+scripts/local-secrets.sh
+
+# Build / test artifacts
+coverage
+.nyc_output
+*.tsbuildinfo
+test-results/
+playwright-report/
+
+# Caches
+.cache
+.eslintcache
+.parcel-cache
+.firebase/
+
+# Local research / reference repos
+.research/
+
+# industrial: generated/large data
+/data/
+*.log
+/docs/deck/*.png
+/docs/deck/PICT_INDUSTRIAL_소개.pdf
+/docs/deck/mail/PICT_INDUSTRIAL_소개.pdf

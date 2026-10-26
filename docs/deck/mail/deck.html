@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>PICT INDUSTRIAL 소개</title>
+<style>
+@page { size: 1280px 720px; margin: 0 }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Malgun Gothic","Noto Sans KR",sans-serif;background:#0a1018;color:#e6eef7}
+.s{width:1280px;height:720px;page-break-after:always;position:relative;overflow:hidden;padding:56px 64px;background:linear-gradient(135deg,#0a1018 0%,#101c2b 100%)}
+.s:last-child{page-break-after:auto}
+.tag{color:#38bdf8;font-size:15px;letter-spacing:3px;font-weight:700;margin-bottom:10px}
+h1{font-size:44px;font-weight:800;line-height:1.2}
+h2{font-size:34px;font-weight:800;margin-bottom:6px}
+.sub{color:#8fa6bd;font-size:18px;margin-bottom:26px}
+.pg{position:absolute;right:40px;bottom:24px;color:#4b6178;font-size:13px}
+.ft{position:absolute;left:64px;bottom:24px;color:#4b6178;font-size:13px;letter-spacing:2px}
+.row{display:flex;gap:28px}
+.col{flex:1}
+ul{list-style:none}
+li{font-size:19px;line-height:1.55;padding-left:20px;position:relative;margin-bottom:9px;color:#d3e0ee}
+li:before{content:"";position:absolute;left:0;top:11px;width:8px;height:8px;background:#38bdf8;border-radius:2px}
+b{color:#fff}
+.card{background:#14263a;border:1px solid #22405c;border-radius:12px;padding:18px 22px}
+.card h3{color:#38bdf8;font-size:19px;margin-bottom:8px}
+.card p{font-size:16px;color:#c3d3e3;line-height:1.5}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.shot{border:1px solid #2b4d6e;border-radius:10px;box-shadow:0 8px 30px #0008}
+.shot img{display:block;width:100%;border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{border-bottom:1px solid #22405c;padding:9px 12px;text-align:left}
+th{color:#38bdf8}
+.flow{display:flex;align-items:center;gap:10px;margin:20px 0}
+.fb{flex:1;background:#14263a;border:1px solid #2b4d6e;border-radius:10px;padding:16px;text-align:center;font-size:16px;line-height:1.4}
+.fb b{display:block;color:#38bdf8;font-size:17px;margin-bottom:4px}
+.ar{color:#38bdf8;font-size:26px}
+.cover{background:radial-gradient(circle at 75% 40%,#16406a 0%,#0a1018 60%)}
+</style></head><body>
+
+<section class="s cover">
+<div style="margin-top:150px"><div class="tag">INDUSTRIAL COMPLEX · SOLAR · DRONE · DIGITAL TWIN</div>
+<h1 style="font-size:78px;letter-spacing:4px">PICT INDUSTRIAL</h1>
+<div style="font-size:30px;color:#bcd2e6;margin-top:14px">산업단지 통합 관제 플랫폼</div>
+<div style="font-size:19px;color:#8fa6bd;margin-top:26px;line-height:1.7">드론 정사영상 · 열화상 · 3D 실측모델로<br>산업단지와 옥상 태양광을 하나의 지도에서 관리합니다</div></div>
+<div class="ft">PICT · 2026.10</div>
+</section>
+
+<section class="s">
+<div class="tag">01 · 배경</div><h2>왜 필요한가</h2><div class="sub">산업단지 점검은 현장 인력 중심이고, 데이터는 흩어져 있습니다</div>
+<div class="grid3" style="margin-top:10px">
+<div class="card"><h3>흩어진 데이터</h3><p>드론 정사영상, 열화상, 3D 모델, 사진, 센서가 서로 다른 도구와 폴더에 있어 한 번에 보기 어렵습니다.</p></div>
+<div class="card"><h3>사후 대응 점검</h3><p>태양광 패널 이상과 열 이상은 육안·수동 판독에 의존해 발견이 늦고 기록이 남지 않습니다.</p></div>
+<div class="card"><h3>보고의 부담</h3><p>점검 후 결과를 지도·표·권고 조치로 정리해 보고서를 만드는 데 반복 수작업이 필요합니다.</p></div>
+</div>
+<div class="card" style="margin-top:28px;border-color:#38bdf8"><h3>PICT INDUSTRIAL의 접근</h3><p style="font-size:19px">DJI Terra 등에서 나온 <b>실측 산출물을 그대로 등록</b>하면, 지도 위 시각화 · 열화상 자동 분석 · 태양광 발전 관리 · 3D 트윈 · 점검 보고서까지 <b>한 화면 흐름</b>으로 이어집니다.</p></div>
+<div class="ft">PICT INDUSTRIAL</div><div class="pg">2</div>
+</section>
+
+<section class="s">
+<div class="tag">02 · 구조</div><h2>데이터에서 의사결정까지</h2><div class="sub">촬영 → 처리 → 등록 → 분석 → 조치</div>
+<div class="flow">
+<div class="fb"><b>촬영</b>드론(M4T 등)·위성<br>RGB + 열화상</div><div class="ar">▶</div>
+<div class="fb"><b>처리</b>DJI Terra · Pix4D<br>RealityScan</div><div class="ar">▶</div>
+<div class="fb"><b>등록</b>GeoTIFF · XYZ 타일<br>3D Tiles(b3dm)</div><div class="ar">▶</div>
+<div class="fb"><b>분석</b>핫스팟 탐지<br>PV 어레이 매칭</div><div class="ar">▶</div>
+<div class="fb"><b>조치</b>알림 · 작업지시<br>점검 보고서</div>
+</div>
+<div class="row" style="margin-top:14px">
+<div class="col"><ul>
+<li><b>GDAL</b>로 EPSG·경계·해상도를 자동 추출하고 WGS84 타일(z12~21)을 생성</li>
+<li>DJI Terra가 만든 <b>기존 타일 폴더를 복사 없이</b> 그대로 참조</li>
+<li>열화상은 <b>Float32 온도(°C) 원본</b>으로 분석, 화면은 컬러맵 오버레이</li></ul></div>
+<div class="col"><ul>
+<li>CesiumJS 3D 지구본 위에 모든 레이어를 중첩 표시</li>
+<li>서버 한 대(<b>단일 포트 3200</b>)로 화면·API·타일 서빙</li>
+<li>같은 네트워크의 PC·태블릿에서 브라우저로 접속</li></ul></div></div>
+<div class="ft">PICT INDUSTRIAL</div><div class="pg">3</div>
+</section>
+
+<section class="s">
+<div class="tag">03 · 대시보드</div><h2>단지 현황을 한눈에</h2><div class="sub">KPI · 실시간 발전 · 기상 · 알림 · 드론 상태</div>
+<div class="row"><div class="shot" style="width:760px"><img src="dashboard.jpg"></div>
+<div class="col"><ul style="margin-top:6px">
+<li>단지 요약과 <b>핫스팟·알림 KPI</b>를 지도 위에 상시 표시</li>
+<li>PV 실시간 출력(5초 갱신)과 <b>일사량 기반 발전 예측</b></li>
+<li>어레이 건전성 4단계(정상·관찰·주의·심각)</li>
+<li>기상·드론 비행 가능 여부와 스테이션 상태</li></ul></div></div>
+<div class="ft">PICT INDUSTRIAL</div><div class="pg">4</div>
+</section>
+
+<section class="s">
+<div class="tag">04 · 영상자료</div><h2>정사영상·열화상·3D를 한곳에서</h2><div class="sub">등록 · 타일 생성 · 오버레이 on/off · 투명도</div>
+<div class="row"><div class="shot" style="width:760px"><img src="imagery.jpg"></div>
+<div class="col"><ul style="margin-top:6px">
+<li>서버 경로 등록 또는 업로드로 <b>GeoTIFF</b> 추가</li>
+<li>Terra 타일 폴더·열화상 방사율 변형(0.95/0.85/0.4/0.15)도 지원</li>
+<li>RGB·열화상·DSM·3D Tiles·사진 폴더를 <b>종류별로 관리</b></li>
+<li>데이터셋별 표시 여부·투명도·기본 표시를 설정</li></ul></div></div>
+<div class="ft">PICT INDUSTRIAL</div><div class="pg">5</div>
+</section>
+
+<section class="s">
+<div class="tag">05 · 열화상 분석</div><h2>핫스팟을 자동으로 찾습니다</h2><div class="sub">열화상 정사영상 → 이상 고온 지점 탐지 → 목록·위치 이동</div>
+<div class="row"><div class="shot" style="width:760px"><img src="thermal.jpg"></div>
+<div class="col"><ul style="margin-top:6px">
+<li><b>PV 어레이 내부</b>: 어레이 중앙값 대비 ΔT 15 °C 이상</li>
+<li><b>PV 외부</b>: 영상 중앙값 대비 ΔT + 20 °C 이상 (지붕·도로 자연 고온 제외)</li>
+<li>최고온도 순 상위 300건 저장, 지도에 200건 표시</li>
+<li>목록 클릭 시 <b>해당 위치로 즉시 이동</b>, 현장 확인·조치 완료 기록</li></ul>
+<div class="card" style="margin-top:14px"><p>등급: ΔT ≥ 30 <b>심각</b> · ≥ 20 높음 · ≥ 10 보통 · 그 외 낮음 (IEC TS 62446-3 참고)</p></div></div></div>
+<div class="ft">PICT INDUSTRIAL</div><div class="pg">6</div>
+</section>
+
+<section class="s">
+<div class="tag">06 · 태양광 관리</div><h2>옥상 태양광 발전·건전성 관리</h2><div class="sub">어레이 · 발전 추정 · 손실 · 작업지시</div>
+<div class="row"><div class="shot" style="width:760px"><img src="solar.jpg"></div>
+<div class="col"><ul style="margin-top:6px">
+<li>지도에서 <b>PV 어레이를 직접 그려</b> 등록</li>
+<li>Open-Meteo 일사량으로 <b>오늘·내일 발전량과 손실</b> 추정</li>
+<li>핫스팟을 어레이에 매칭해 건전성·손실 계수 산정</li>
+<li>세척·점검 <b>작업지시</b> 발행과 이력 관리</li></ul></div></div>
+<div class="ft">PICT INDUSTRIAL</div><div class="pg">7</div>
+</section>
+
+<section class="s">
+<div class="tag">07 · 3D 트윈</div><h2>실측 3D 모델을 멀리서도 선명하게</h2><div class="sub">DJI Terra b3dm · iTwin · RealityScan 3D Tiles 지원</div>
+<div class="row"><div class="shot" style="width:760px"><img src="twin3d.jpg"></div>
+<div class="col"><ul style="margin-top:6px">
+<li>3.5 km 상공에서도 <b>건물·도로가 바로 구분</b>되는 상세 메시</li>
+<li>Terra 타일셋 특성을 보정하는 <b>자동 LOD</b> (상세도 슬라이더 제공)</li>
+<li>시간대별 조명·그림자, 건물 돌출, 지형 과장, 뷰 프리셋</li>
+<li>지면 높이 자동 보정으로 정사영상과 정합</li></ul></div></div>
+<div class="ft">PICT INDUSTRIAL</div><div class="pg">8</div>
+</section>
+
+<section class="s">
+<div class="tag">08 · 운영</div><h2>안전·재난 · 드론 운용 · 보고서</h2><div class="sub">알림에서 점검, 보고까지 이어지는 운영 기능</div>
+<div class="grid3">
+<div><div class="shot"><img src="safety.jpg"></div><div class="card" style="margin-top:12px"><h3>안전·재난</h3><p>알림 센터, 위험 시설, 산불·지진·재난경보 등 광역 위험요소</p></div></div>
+<div><div class="shot"><img src="drone.jpg"></div><div class="card" style="margin-top:12px"><h3>드론 운용</h3><p>스테이션 상태, 임무 예약, 촬영 사진 EXIF GPS 지도 표시</p></div></div>
+<div><div class="shot"><img src="report.jpg"></div><div class="card" style="margin-top:12px"><h3>보고서</h3><p>종합 점검 보고서 자동 생성, 권고 조치, 인쇄·PDF·JSON</p></div></div>
+</div>
+<div class="ft">PICT INDUSTRIAL</div><div class="pg">9</div>
+</section>
+
+<section class="s">
+<div class="tag">09 · 적용 사례</div><h2>실측 데이터로 검증했습니다</h2><div class="sub">DJI Terra 산출물을 그대로 등록해 분석한 결과</div>
+<div class="row">
+<div class="col"><table>
+<tr><th>단지</th><th>RGB 정사영상</th><th>열화상</th><th>핫스팟</th></tr>
+<tr><td>원주 단계산업단지</td><td>7.4 cm · 2.5 cm</td><td>11 cm</td><td>331건 탐지 · 300건 저장</td></tr>
+<tr><td>동해산업단지</td><td>2.6 cm</td><td>11 cm</td><td>69건</td></tr></table>
+<ul style="margin-top:22px"><li>DSM·3D Tiles(b3dm)·포인트클라우드까지 함께 연동</li>
+<li>원주 열화상: 배경 48.2 °C 기준 임계 83.2 °C, 최고 103.1 °C 확인</li>
+<li>같은 비행의 방사율 변형 영상은 <b>결과를 하나로 유지</b>해 중복 집계 방지</li></ul></div>
+<div class="shot" style="width:520px;align-self:flex-start"><img src="donghae.jpg"></div></div>
+<div class="ft">PICT INDUSTRIAL</div><div class="pg">10</div>
+</section>
+
+<section class="s">
+<div class="tag">10 · 기술</div><h2>기술 구성</h2><div class="sub">가볍게 설치하고 바로 운영</div>
+<div class="grid4">
+<div class="card"><h3>화면</h3><p>React 19 · Vite 7<br>CesiumJS · Zustand</p></div>
+<div class="card"><h3>서버</h3><p>Node.js · Express 5<br>SSE 실시간 갱신</p></div>
+<div class="card"><h3>영상 처리</h3><p>GDAL<br>XYZ 타일 · 온도 그리드</p></div>
+<div class="card"><h3>데이터</h3><p>JSON 파일 DB<br>외부 Terra 폴더 참조</p></div>
+</div>
+<ul style="margin-top:34px">
+<li>실행: 배치 파일 한 번 → <b>http://localhost:3200/</b> (단일 포트)</li>
+<li>외부 연동: Open-Meteo 기상·일사, CAMS 대기질, 광역 위험 피드</li>
+<li>원본 데이터는 이동·복사 없이 <b>기존 경로 그대로</b> 참조</li></ul>
+<div class="ft">PICT INDUSTRIAL</div><div class="pg">11</div>
+</section>
+
+<section class="s">
+<div class="tag">11 · 향후</div><h2>다음 단계</h2><div class="sub">현장 적용을 위한 확장 방향</div>
+<div class="grid3">
+<div class="card"><h3>PV 어레이 등록</h3><p>실제 패널 폴리곤을 등록해 어레이별 기준선으로 정밀 판정하고 발전 손실을 산정</p></div>
+<div class="card"><h3>실설비 연동</h3><p>인버터·센서 실시간 연동으로 모의 값 대신 실제 발전·환경 데이터 표시</p></div>
+<div class="card"><h3>데이터 확대</h3><p>추가 산업단지의 Terra 프로젝트 등록, 정기 촬영 간 변화 비교</p></div>
+</div>
+<div class="card" style="margin-top:28px;border-color:#38bdf8"><h3>도입 제안</h3><p style="font-size:19px">보유 중인 드론 산출물만으로 바로 시작할 수 있습니다. 시범 단지 1곳을 선정해 <b>등록 → 분석 → 보고서</b>까지 시연해 보시기를 권합니다.</p></div>
+<div class="ft">PICT INDUSTRIAL · psy@pict.kr</div><div class="pg">12</div>
+</section>
+</body></html>
