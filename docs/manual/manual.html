@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>PICT INDUSTRIAL 사용자 매뉴얼</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:"Malgun Gothic","Noto Sans KR",sans-serif;color:#1f2937;font-size:10.5pt;line-height:1.65;margin:0}
+h1{font-size:21pt;color:#0b3d6b;border-bottom:3px solid #0ea5e9;padding-bottom:6px;margin:0 0 14px;page-break-before:always}
+h1.first{page-break-before:avoid}
+h2{font-size:14pt;color:#0b3d6b;margin:22px 0 6px;border-left:5px solid #0ea5e9;padding-left:9px}
+h3{font-size:11.5pt;color:#075985;margin:14px 0 4px}
+p{margin:5px 0}
+ul,ol{margin:5px 0 8px 0;padding-left:22px}
+li{margin:2px 0}
+code,kbd{font-family:Consolas,monospace;background:#eef2f7;border-radius:3px;padding:0 4px;font-size:9.5pt}
+kbd{border:1px solid #cbd5e1;background:#f8fafc}
+table{border-collapse:collapse;width:100%;margin:8px 0;font-size:9.8pt;page-break-inside:avoid}
+th{background:#0b3d6b;color:#fff;text-align:left;padding:5px 8px}
+td{border-bottom:1px solid #dbe4ee;padding:5px 8px;vertical-align:top}
+tr:nth-child(even) td{background:#f6f9fc}
+figure{margin:10px 0 14px;page-break-inside:avoid;text-align:center}
+figure img{width:100%;border:1px solid #cbd5e1;border-radius:6px;box-shadow:0 2px 8px #0002}
+figcaption{font-size:9pt;color:#64748b;margin-top:4px}
+.box{border-radius:6px;padding:8px 12px;margin:9px 0;page-break-inside:avoid;font-size:10pt}
+.tip{background:#ecfeff;border-left:4px solid #06b6d4}
+.warn{background:#fff7ed;border-left:4px solid #f97316}
+.note{background:#f1f5f9;border-left:4px solid #64748b}
+.box b.t{display:block;margin-bottom:2px}
+.cover{height:250mm;display:flex;flex-direction:column;justify-content:center;page-break-after:always;background:linear-gradient(160deg,#0b3d6b,#0ea5e9 130%);color:#fff;margin:-18mm -18mm 0;padding:0 24mm}
+.cover .s{letter-spacing:4px;font-size:10pt;opacity:.85}
+.cover h1{color:#fff;border:0;font-size:36pt;margin:10px 0;page-break-before:avoid}
+.cover .d{font-size:13pt;opacity:.95}
+.cover .m{margin-top:60px;font-size:10pt;opacity:.8}
+.toc a{color:#0b3d6b;text-decoration:none}
+.toc li{margin:3px 0}
+.toc ol{padding-left:20px}
+.steps{counter-reset:s;list-style:none;padding-left:0}
+.steps li{counter-increment:s;position:relative;padding-left:32px;margin:6px 0}
+.steps li:before{content:counter(s);position:absolute;left:0;top:1px;width:22px;height:22px;border-radius:50%;background:#0ea5e9;color:#fff;text-align:center;font-weight:700;font-size:9.5pt;line-height:22px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+</style></head><body>
+
+<section class="cover">
+<div class="s">INDUSTRIAL COMPLEX · SOLAR · DRONE · DIGITAL TWIN</div>
+<h1>PICT INDUSTRIAL</h1>
+<div class="d">산업단지 통합 관제 플랫폼<br>사용자 매뉴얼</div>
+<div class="m">버전 2026.10 · PICT</div>
+</section>
+
+<h1 class="first">목차</h1>
+<div class="toc">
+<ol>
+<li><a href="#s1">시작하기</a> — 접속, 화면 구성, 지도 조작</li>
+<li><a href="#s2">메뉴별 사용법</a>
+<ol type="a">
+<li>대시보드 · 영상자료 · 열화상 분석</li>
+<li>태양광 관리 · 3D 트윈 · 시설·입주기업</li>
+<li>상호 기입 · 주소·필지 · 도면 중첩</li>
+<li>환경 모니터링 · 안전·재난 · 드론 운용 · 보고서 · 설정</li>
+</ol></li>
+<li><a href="#s3">업무별 따라하기</a> — 신규 단지, 실측 데이터 등록, 열화상 점검, 입주기업 지도화</li>
+<li><a href="#s4">데이터 관리</a> — 저장 위치, 백업, 다른 컴퓨터로 옮기기</li>
+<li><a href="#s5">문제 해결(FAQ)</a></li>
+<li><a href="#s6">부록</a> — CSV 양식, 판정 기준, 지원 형식, 용어</li>
+</ol>
+</div>
+
+<div class="box note"><b class="t">이 매뉴얼의 대상</b>산업단지 관리자·안전/시설 담당자·드론 촬영 담당자. 서버 설치와 개발자용 내용은 프로젝트의 <code>README-INDUSTRIAL.md</code>를 참고하세요.</div>
+
+<h1 id="s1">1. 시작하기</h1>
+
+<h2>1.1 실행과 접속</h2>
+<ol class="steps">
+<li>서버 PC에서 <code>start-industrial.bat</code>을 실행합니다(검은 서버 창이 열리고 브라우저가 자동으로 열립니다). 수동으로는 프로젝트 폴더에서 <code>npm start</code>.</li>
+<li>브라우저에서 <b>http://localhost:3200/</b> 로 접속합니다. 같은 네트워크의 다른 PC·태블릿은 <code>http://서버IP:3200/</code>.</li>
+<li>서버 창은 사용하는 동안 닫지 마세요. 닫으면 화면이 멈춥니다.</li>
+</ol>
+<div class="box warn"><b class="t">포트는 3200 하나입니다</b>예전 주소(5174 등)로 열어 둔 탭은 자동으로 3200으로 넘어가지만, 즐겨찾기를 3200으로 바꿔 두세요. 서버를 다시 띄울 때는 기존 서버 창을 먼저 닫아야 포트가 겹치지 않습니다.</div>
+
+<h2>1.2 화면 구성</h2>
+<figure><img src="img/dashboard.jpg"><figcaption>그림 1. 기본 화면(대시보드)</figcaption></figure>
+<table>
+<tr><th style="width:26%">영역</th><th>설명</th></tr>
+<tr><td>상단 왼쪽</td><td>로고와 <b>단지 선택</b> 드롭다운. 단지를 바꾸면 지도·데이터가 해당 단지로 전환됩니다.</td></tr>
+<tr><td>상단 오른쪽</td><td>현재 기상, 실시간(LIVE) 상태, <b>피드</b>(광역 레이어), 3D, LOG 버튼. 그 아래 KPI 카드 4개: PV 출력 · 오늘 발전량 · 핫스팟 · 알림.</td></tr>
+<tr><td>왼쪽 메뉴 레일</td><td>대시보드, 영상자료, 열화상 분석 등 14개 메뉴. 열화상·안전 메뉴의 빨간 숫자는 미조치 건수. 같은 메뉴를 다시 누르면 패널이 접힙니다.</td></tr>
+<tr><td>메뉴 패널</td><td>선택한 메뉴의 내용. 오른쪽 위 ‹ 버튼으로 접어 지도를 넓게 볼 수 있습니다.</td></tr>
+<tr><td>지도</td><td>3D 지구본 위에 정사영상·열화상·3D 모델·필지·도면이 겹쳐 표시됩니다. 객체를 클릭하면 오른쪽에 <b>상세 카드</b>가 열립니다.</td></tr>
+<tr><td>하단 VISUAL MODE</td><td>NORMAL / NVG / FLIR 등 화면 효과. 평소에는 NORMAL.</td></tr>
+</table>
+
+<h2>1.3 지도 조작</h2>
+<table>
+<tr><th style="width:30%">동작</th><th>방법</th></tr>
+<tr><td>이동</td><td>마우스 왼쪽 버튼 드래그</td></tr>
+<tr><td>확대/축소</td><td>마우스 휠, 또는 오른쪽 버튼 드래그</td></tr>
+<tr><td>기울기·회전</td><td>휠 버튼 드래그 또는 <kbd>Ctrl</kbd>+왼쪽 드래그</td></tr>
+<tr><td>특정 위치로 이동</td><td>목록의 행·버튼(위치로 이동)을 누르면 지도가 자동으로 이동합니다.</td></tr>
+<tr><td>그리기(시설·PV)</td><td>왼쪽 클릭으로 점 추가 → 오른쪽 클릭 또는 <kbd>Enter</kbd>로 완료, <kbd>Esc</kbd>로 취소</td></tr>
+</table>
+<div class="box tip"><b class="t">팁</b>정밀 작업(필지 클릭, 도면 비교)은 지도를 <b>위에서 내려다보게</b>(기울기 최소) 하고 약 1 km 이하로 확대하세요.</div>
+
+<h2>1.3 등록된 단지</h2>
+<table>
+<tr><th>단지</th><th>내용</th></tr>
+<tr><td>원주 단계산업단지</td><td>RGB 정사영상, 열화상(11 cm), 3D 모델 — 실측 (2026-09-17)</td></tr>
+<tr><td>동해산업단지</td><td>RGB 정사영상, 열화상, 3D 모델 — 실측 (2026-09-16)</td></tr>
+<tr><td>춘천 / 강촌</td><td>3D Tiles, 정사영상·사진</td></tr>
+<tr><td>북평산단 데모</td><td>가상 배치 데모(시설·PV·센서 포함). 메뉴 체험용</td></tr>
+</table>
+<p>단지는 <b>설정</b> 메뉴에서 추가·편집합니다.</p>
+
+<h1 id="s2">2. 메뉴별 사용법</h1>
+
+<h2>2.1 대시보드</h2>
+<p>단지 현황을 한눈에 봅니다. 단지 요약, <b>실시간 발전</b>(5초 갱신)과 오늘 예상 발전량, 열 이상 핫스팟과 미확인 알림 수, 일사량·기온·풍속, PV 어레이 건전성(정상·관찰·주의·심각), 시설 현황, 드론 스테이션 상태, 최근 알림이 표시됩니다.</p>
+<ul><li>"전체" 버튼으로 어레이·알림 상세 메뉴로 이동합니다.</li><li>알림은 <b>확인</b> 버튼으로 처리합니다.</li></ul>
+<div class="box note"><b class="t">참고</b>태양광 발전량은 PV 어레이를 등록해야 표시되며, 실제 인버터 연동 전에는 일사량 기반 모의 값입니다.</div>
+
+<h2>2.2 영상자료</h2>
+<figure><img src="img/imagery.jpg"><figcaption>그림 2. 영상자료 — 데이터셋 목록</figcaption></figure>
+<p>정사영상·열화상·DSM·3D Tiles·사진 폴더를 등록하고 지도 표시를 관리합니다. 상단 탭은 <b>데이터셋 / + 등록·업로드 / 위성</b>입니다.</p>
+<ul>
+<li><b>오버레이 on/off · 투명도</b>: 데이터셋마다 켜고 끄고 투명도를 조절합니다. 여러 개를 겹쳐 비교할 수 있습니다.</li>
+<li><b>열화상 분석</b> 버튼: 열화상 데이터셋에서 바로 분석 메뉴로 이동합니다.</li>
+<li><b>서버 로컬 경로 등록</b>: 서버 PC에 있는 GeoTIFF / <code>tileset.json</code> / 사진 폴더의 절대 경로를 입력해 등록(대용량 권장, 파일 복사 없음). DJI Terra의 타일 폴더는 그대로 참조합니다.</li>
+<li><b>파일 업로드(브라우저)</b>: 작은 파일을 직접 올립니다.</li>
+</ul>
+<div class="box tip"><b class="t">팁</b>"유형"은 정확히 고르세요: 정사영상(orthophoto) · 열화상(thermal) · DSM · 3D Tiles · 포인트클라우드 · 사진. 열화상은 온도값(Float32 °C) GeoTIFF가 가장 정확합니다.</div>
+
+<h2>2.3 열화상 분석</h2>
+<figure><img src="img/thermal.jpg"><figcaption>그림 3. 열화상 분석 — 핫스팟 탐지와 목록</figcaption></figure>
+<p>열화상 정사영상에서 이상 고온 지점(핫스팟)을 자동 탐지합니다.</p>
+<ol class="steps">
+<li><b>분석 대상</b>에서 열화상 데이터셋을 고릅니다(방사율 0.95가 기본).</li>
+<li><b>PV ΔT</b>(기본 15 °C), <b>PV 외 ΔT</b>(비우면 PV ΔT+20), 필요 시 <b>절대 온도</b>를 정합니다.</li>
+<li><b>핫스팟 분석 실행</b>을 누릅니다(큰 영상은 수십 초 걸립니다).</li>
+<li>결과 목록의 행을 클릭하면 지도가 해당 위치로 이동합니다. <b>현장 확인</b> → <b>조치 완료</b>로 처리 상태를 기록합니다.</li>
+</ol>
+<p><b>표시 옵션</b>에서 오버레이 소스(원해상도 타일 / 온도 그리드 컬러맵), 팔레트(ironbow 등), 최소·최대 °C, 투명도를 바꿉니다.</p>
+<div class="box note"><b class="t">판정 기준</b>PV 어레이 안: 어레이 중앙값 대비 ΔT ≥ 15 °C. PV 밖: 영상 중앙값 대비 ΔT ≥ 임계값+20 °C(지붕·도로의 자연 고온 제외). 최고온도 순 상위 300건을 저장하고 지도에는 200건을 표시합니다. 등급은 ΔT ≥ 30 심각 · ≥ 20 높음 · ≥ 10 보통(IEC TS 62446-3 참고).</div>
+<div class="box warn"><b class="t">같은 비행은 결과 하나만</b>같은 단지·같은 촬영일의 방사율 변형 영상(0.95/0.85/0.4/0.15)은 같은 비행이므로 마지막 분석이 이전 결과를 교체합니다. 방사율이 다른 영상으로 분석해도 핫스팟이 중복 집계되지 않습니다.</div>
+<p>PV 어레이를 등록하지 않은 단지는 모든 핫스팟이 "PV 외"로 판정됩니다. 어레이를 그린 뒤 다시 분석하면 어레이별 기준선이 적용됩니다.</p>
+
+<h2>2.4 태양광 관리</h2>
+<figure><img src="img/solar.jpg"><figcaption>그림 4. 태양광 관리</figcaption></figure>
+<ul>
+<li><b>발전 현황</b>: 어레이 목록, 실시간 출력·모듈 온도·효율, 오늘/내일 발전량과 손실 추정(일사량 기반).</li>
+<li><b>PV 어레이 등록</b>: "지도에서 그리기"를 켜고 정사영상 위 패널 영역을 따라 클릭 → 우클릭/Enter 완료 → 이름·용량 입력. 면적과 모듈 수는 자동 계산됩니다.</li>
+<li>어레이를 선택하면 상세(설비용량, 경사/방위, 최근 세척·열화상 점검, 핫스팟 수)가 나오고 <b>세척 작업지시</b>, <b>현장 점검 지시</b>를 발행할 수 있습니다.</li>
+<li><b>작업지시/유지보수</b> 목록에서 진행 상태를 완료 처리합니다.</li>
+</ul>
+
+<h2>2.5 3D 트윈</h2>
+<figure><img src="img/twin.jpg"><figcaption>그림 5. 3D 트윈 메뉴와 실측 3D 모델</figcaption></figure>
+<ul>
+<li><b>실측 3D Tiles</b>: 등록된 3D 모델(DJI Terra b3dm, iTwin 등)의 표시 on/off, "위치로 이동".</li>
+<li><b>3D Tiles 상세도</b> 슬라이더(기본 2): 값이 작을수록 멀리서도 선명하지만 무겁습니다. 멀리서 거칠게 보이면 낮추고, 느리면 높이세요(춘천 같은 큰 모델은 슬라이더 값 그대로 적용).</li>
+<li><b>3D Tiles 높이 보정</b>: 정사영상과 3D 모델 높이가 어긋날 때 조정(자동 값이 기본).</li>
+<li><b>건물 모델</b>: 등록한 시설을 속성 기반으로 돌출(높이 배율), PV 어레이 표시.</li>
+<li><b>조명·시간대</b>: 시간대별 태양 위치와 그림자. <b>뷰 프리셋</b>: 수직 / 경사 / 지상 / 북향. <b>지형 과장</b> 조절.</li>
+</ul>
+
+<h2>2.6 시설·입주기업</h2>
+<figure><img src="img/facility.jpg"><figcaption>그림 6. 시설·입주기업 (북평 데모 단지)</figcaption></figure>
+<ul>
+<li>필지/건물/입주기업 목록, 검색(기업명·시설명·필지), 유형 필터(제조공장·물류창고·사무동·에너지/유틸리티·폐수/폐기물·미분양).</li>
+<li>행을 선택하면 상세(지붕 면적, 인원, 월 전력, 층수, 위험도, 태양광 설치 현황)와 <b>편집</b>·<b>삭제</b>·<b>위치로 이동</b>.</li>
+<li>"지도에서 시설(건물) 그리기"로 건물을 직접 그린 뒤 편집에서 속성을 입력합니다.</li>
+<li>입주기업을 한꺼번에 넣으려면 <b>주소·필지</b> 메뉴에서 CSV로 올린 뒤 "시설·입주기업으로 일괄 등록"을 사용하세요.</li>
+</ul>
+
+<h2>2.7 상호 기입 (지적도 클릭)</h2>
+<figure><img src="img/geo-lots-select.jpg"><figcaption>그림 7. 지적도에서 필지를 선택하고 상호를 입력</figcaption></figure>
+<p>지적도 필지를 클릭해 상호·회사정보를 기입합니다. 메뉴를 열면 연속지적도가 자동으로 켜집니다.</p>
+<ol class="steps">
+<li>지도를 <b>약 1 km 이하로 확대</b>(위에서 내려다보기)하면 노란 지적 경계와 지번이 나타납니다.</li>
+<li>기입할 필지를 <b>클릭</b>합니다(하늘색으로 강조). 한 업체가 여러 필지를 쓰면 <kbd>Shift</kbd> 또는 <kbd>Ctrl</kbd>+클릭으로 추가 선택합니다.</li>
+<li>상호(필수), 대표자, 연락처, 업종 분류, 세부 업종, 비고를 입력하고 <kbd>Enter</kbd> 또는 <b>기입 저장</b>.</li>
+<li>저장하면 필지가 업종 색으로 칠해지고 상호가 표시됩니다. <b>건축물대장 정보(층수·용도)가 자동으로 채워집니다</b>.</li>
+</ol>
+<ul>
+<li>이미 입력한 상호는 자동완성되고, "직전 입력값 불러오기"로 반복 입력을 줄입니다.</li>
+<li>같은 필지를 다시 선택해 저장하면 수정, "기입 삭제"로 지웁니다.</li>
+<li>업종 분류를 <b>"자동"</b>으로 두면 건축물대장 주용도(공장·창고·업무 등)로 분류합니다.</li>
+<li><b>기입 현황</b>: 기입 필지 수·업체 수·총 면적, 검색, 행 클릭 시 이동, <b>CSV 내보내기</b>(상호·대표자·연락처·주소·PNU·층수·용도·면적 등).</li>
+</ul>
+<figure><img src="img/geo-bld.jpg"><figcaption>그림 8. 저장 후 — 상호와 "2층 · 공장"이 필지 위에 표시됨</figcaption></figure>
+<div class="box warn"><b class="t">정확도 주의</b>클릭 위치는 건물 지붕 기준이라 비스듬히 보면 옆 필지가 선택될 수 있습니다. 저장 전에 하늘색으로 강조된 필지가 맞는지 확인하세요. 건축물 정보는 브이월드 건물통합정보(건축물대장 기반)라 최신 변경이 늦게 반영될 수 있으며, 공식 서류용이면 원본 대장과 대조하세요.</div>
+
+<h2>2.8 주소·필지 (CSV 일괄 입력)</h2>
+<figure><img src="img/geo-parcel-upload.jpg"><figcaption>그림 9. CSV 업로드와 열 지정</figcaption></figure>
+<p>엑셀 명단(업체명·주소 등)을 올리면 주소를 좌표로 바꿔(지오코딩) 필지로 지도에 찍습니다.</p>
+<ol class="steps">
+<li>엑셀을 <b>CSV(쉼표로 분리)</b>로 저장합니다(UTF-8·CP949 자동 인식). <b>샘플 CSV</b> 버튼으로 양식을 받을 수 있습니다.</li>
+<li><b>주소 CSV 업로드</b>에서 파일을 선택하면 주소·업체명·면적·업종 열이 자동 지정됩니다. 다르면 드롭다운으로 바로잡습니다. 경도·위도 열이 있으면 그 좌표를 그대로 사용합니다.</li>
+<li><b>지오코딩 후 지도에 매핑</b>을 누릅니다. 진행률이 표시되며 <b>중단</b>할 수 있습니다.</li>
+<li>완료 후 <b>건축물대장 조회</b>가 자동으로 이어져 층수·용도가 채워집니다.</li>
+<li>결과 목록에서 <b>실패만</b> / <b>정확도 낮음</b> 필터로 문제 건을 모아 주소를 고쳐 재지오코딩하거나, 경도·위도를 직접 입력합니다.</li>
+<li>경계가 있는 필지는 <b>시설·입주기업으로 일괄 등록</b>할 수 있습니다.</li>
+</ol>
+<table>
+<tr><th style="width:22%">경계 종류</th><th>의미</th></tr>
+<tr><td>지적도 경계(파랑)</td><td>브이월드 연속지적도의 실제 필지 경계 + PNU</td></tr>
+<tr><td>근사 도형(노랑 점선)</td><td>좌표는 찍혔지만 경계는 면적 열(없으면 20 m) 기준 사각형 — 정확도 낮음</td></tr>
+</table>
+<div class="box tip"><b class="t">지오코더 설정(중요)</b>같은 메뉴의 <b>지오코더 설정</b>에 <b>브이월드 API 키</b>를 등록하면 지번·도로명 주소를 정확히 찾고 실제 필지 경계를 가져옵니다. 키가 없으면 무료 OSM 지오코더로 읍·면·동·리 수준만 찾습니다(느리고 부정확). "주소 한 건 테스트"로 동작을 확인하세요. 키는 서버에만 저장되며 화면과 GitHub에 노출되지 않습니다.</div>
+<h3>연속지적도 표시</h3>
+<p>같은 메뉴의 <b>연속지적도(브이월드)</b> 토글을 켜면 전국 지적 경계와 지번이 지도 위에 겹쳐 보입니다(약 1.5 km 이하로 확대 시).</p>
+<figure><img src="img/geo-cadastral.jpg"><figcaption>그림 10. 연속지적도 겹쳐보기 (노란 경계선·지번)</figcaption></figure>
+
+<h2>2.9 도면 중첩 (SHP / DXF)</h2>
+<figure><img src="img/geo-drawings.jpg"><figcaption>그림 11. SHP(하늘색 면)와 DXF(초록 선)를 3D 모델 위에 중첩</figcaption></figure>
+<ol class="steps">
+<li><b>도면 업로드</b>에서 파일을 선택합니다. SHP는 <code>.shp .dbf .shx</code>(권장 <code>.prj .cpg</code>)를 <b>함께</b> 선택하거나 <code>.zip</code> 하나로 올립니다. DXF·GeoJSON·KML·GPKG도 가능합니다.</li>
+<li>좌표계는 기본 <b>자동 판별</b>(.prj가 있으면 그대로, 없으면 국내 좌표계 후보 중 단지 위치에 가장 가까운 것)입니다. 알고 있으면 직접 선택하세요.</li>
+<li><b>업로드 후 지도에 중첩</b>을 누르면 변환되어 지도에 표시되고 해당 위치로 이동합니다.</li>
+</ol>
+<p><b>스타일·설정</b>에서: 색상, 선 굵기, 투명도, 지면 밀착(클램프), 면 채우기, 라벨(문자·속성) 표시와 <b>라벨 속성 선택</b>, DXF 원본 색 사용, <b>도면 레이어별 켜기/끄기</b>.</p>
+<div class="box tip"><b class="t">위치가 어긋나거나 글자가 깨질 때</b>도면 카드의 <b>스타일·설정 → 좌표계/인코딩 선택 → 이 설정으로 다시 변환</b>. 재업로드가 필요 없습니다. 한글 CAD는 보통 CP949, 좌표계는 중부원점(EPSG:5186/5174 등) 또는 UTM-K(5179)입니다.</div>
+<p>여러 도면과 지적도·필지·열화상을 함께 켜서 서로 대조할 수 있습니다.</p>
+
+<h2>2.10 환경 모니터링</h2>
+<figure><img src="img/env.jpg"><figcaption>그림 12. 환경 모니터링</figcaption></figure>
+<ul>
+<li><b>현재 기상</b>(Open-Meteo): 일사·기온·풍속·강수와 드론 비행 가능 여부.</li>
+<li><b>대기질</b>(CAMS): PM10·PM2.5 등.</li>
+<li><b>단지 센서</b>: 등록된 센서의 실시간 측정값(대기·소음·VOC·기상). 센서는 설정 메뉴에서 추가합니다.</li>
+<li><b>광역 환경 레이어</b>: 기상·대기질·기상특보·산불 열점 등을 지구본에 켜기/끄기.</li>
+</ul>
+
+<h2>2.11 안전·재난</h2>
+<figure><img src="img/safety.jpg"><figcaption>그림 13. 안전·재난</figcaption></figure>
+<ul>
+<li><b>알림 센터</b>: 열 이상·센서 경보 등. <b>위치</b>로 이동, <b>확인</b>으로 처리. 심각 알림은 화면 상단에 배너로 뜹니다.</li>
+<li><b>위험 시설</b>: 위험도 50 이상 시설 목록.</li>
+<li><b>광역 위험요소 레이어</b>: 산불 열점(NASA FIRMS), 지진(USGS), 재난경보(GDACS), 자연재해(EONET), 항공기(ADS-B), 비행제한공역.</li>
+<li><b>수동 알림 등록</b>: 등급·분류·제목·내용을 적어 직접 발행.</li>
+</ul>
+
+<h2>2.12 드론 운용</h2>
+<figure><img src="img/drone.jpg"><figcaption>그림 14. 드론 운용</figcaption></figure>
+<ul>
+<li><b>비행 조건</b>: 풍속·강수 기준 비행 가능 여부 표시.</li>
+<li><b>스테이션</b> 상태(배터리·풍속·내부 온도)와 <b>임무 예약</b>(임무명·유형·스테이션·시작 시각·고도·반복), 완료/취소, <b>긴급 이륙</b>.</li>
+<li><b>촬영 원본</b>: 사진 폴더를 등록하면 EXIF의 GPS로 위치를 읽어 썸네일과 함께 지도에 표시(열화상/가시광 구분).</li>
+</ul>
+
+<h2>2.13 보고서</h2>
+<figure><img src="img/report.jpg"><figcaption>그림 15. 보고서</figcaption></figure>
+<ol class="steps">
+<li><b>보고서 생성</b>을 누르면 현재 단지의 종합 점검 보고서(KPI, 핫스팟, 어레이 건전성, 권고 조치)가 만들어집니다.</li>
+<li><b>인쇄/PDF</b>로 출력하거나 <b>JSON</b>으로 내려받습니다. 브라우저 인쇄 창에서 "PDF로 저장"을 선택하면 PDF가 됩니다.</li>
+<li>과거 보고서는 <b>이력</b>에서 다시 엽니다.</li>
+</ol>
+
+<h2>2.14 설정</h2>
+<figure><img src="img/settings.jpg"><figcaption>그림 16. 설정</figcaption></figure>
+<ul>
+<li><b>산업단지 목록</b>: 선택·편집·추가. 단지명, 코드, 지역, <b>경도·위도</b>, 유형, 면적(ha), 입주기업 수, PV 목표(kWp), 카메라 높이(m), 설명을 입력합니다.</li>
+<li><b>센서 추가</b>, <b>드론 스테이션 추가</b>: 이름·종류·위치(비우면 단지 중심).</li>
+<li><b>시스템 상태</b>: GDAL(QGIS) 연결, 처리 작업 상태. 데모 데이터 재생성 버튼은 <b>모든 데이터를 초기화</b>하므로 사용하지 마세요.</li>
+</ul>
+<div class="box warn"><b class="t">주의</b>"데모 데이터 재생성"은 등록한 단지·필지·분석 결과를 지우고 초기 데모로 되돌립니다. 필요하면 먼저 <code>data/db.json</code>을 백업하세요.</div>
+
+<h1 id="s3">3. 업무별 따라하기</h1>
+
+<h2>3.1 새 단지를 추가하고 실측 데이터를 올리기</h2>
+<ol class="steps">
+<li><b>설정 → 단지 추가</b>: 단지명, 코드, 지역, 경도·위도, 면적 등을 입력 → 저장.</li>
+<li><b>영상자료 → + 등록/업로드</b>: 드론 결과물을 서버 경로로 등록합니다.
+<ul><li>RGB 정사영상: 유형 "정사영상", 경로 <code>…\map\result.tif</code> (DJI Terra의 타일 폴더 <code>map\{z}\{x}\{y}.png</code>가 같이 있으면 즉시 표시)</li>
+<li>열화상: 유형 "열화상", <code>…\map\infrared_map\result_Infrared_*.tif</code></li>
+<li>3D 모델: 유형 "3D Tiles", <code>…\terra_b3dms\tileset.json</code></li></ul></li>
+<li>등록 후 처리(메타 추출·타일 생성)가 끝나면 지도에 표시됩니다. 오버레이 스위치로 켜고 투명도를 맞춥니다.</li>
+<li>3D 모델이 지면과 어긋나면 <b>3D 트윈 → 3D Tiles 높이 보정</b>을 조정합니다.</li>
+</ol>
+
+<h2>3.2 열화상 점검 → 현장 확인 → 보고서</h2>
+<ol class="steps">
+<li><b>열화상 분석</b>에서 대상 영상을 고르고 <b>핫스팟 분석 실행</b>.</li>
+<li>핫스팟 목록(등급 순)에서 심각 건부터 위치로 이동해 영상을 확인.</li>
+<li>현장 점검 후 <b>현장 확인</b>, 보수 후 <b>조치 완료</b>로 상태 변경(태양광 어레이면 <b>작업지시</b> 발행).</li>
+<li><b>보고서 → 보고서 생성 → 인쇄/PDF</b>로 결과 제출.</li>
+</ol>
+
+<h2>3.3 입주기업 명단으로 지적도 위에 한꺼번에 표시하기</h2>
+<ol class="steps">
+<li>(처음 한 번) <b>주소·필지 → 지오코더 설정</b>에 브이월드 키 입력, "주소 한 건 테스트"로 확인.</li>
+<li>엑셀 명단을 CSV로 저장(<b>업체명, 주소</b> 필수 · 대지면적, 업종 선택). 지번 주소가 도로명보다 필지 매칭이 정확합니다.</li>
+<li><b>주소·필지</b>에서 업로드 → 열 확인 → <b>지오코딩 후 지도에 매핑</b>.</li>
+<li>실패·정확도 낮음 건을 필터로 모아 보정(주소 수정 또는 좌표 직접 입력). 또는 <b>상호 기입</b> 메뉴에서 지적도를 클릭해 직접 지정.</li>
+<li>필요하면 <b>시설·입주기업으로 일괄 등록</b> → 시설·입주기업 메뉴에서 속성(위험도, 인원 등) 편집.</li>
+<li><b>상호 기입 → 기입 현황 → CSV 내보내기</b>로 결과 파일을 받습니다.</li>
+</ol>
+
+<h2>3.4 기존 CAD 도면을 지적도·정사영상과 겹쳐 확인하기</h2>
+<ol class="steps">
+<li><b>도면 중첩</b>에서 SHP(zip) 또는 DXF를 업로드(좌표계는 자동).</li>
+<li>도면이 정사영상과 어긋나면 <b>다시 변환</b>에서 좌표계를 바꿔 맞춥니다.</li>
+<li><b>주소·필지 → 연속지적도</b>를 켜서 도면과 지적 경계를 비교합니다.</li>
+<li>도면 레이어(건물·도로·문자 등)를 필요한 것만 켭니다.</li>
+</ol>
+
+<h1 id="s4">4. 데이터 관리</h1>
+<h2>4.1 데이터가 저장되는 곳</h2>
+<table>
+<tr><th style="width:34%">항목</th><th>위치(프로젝트 폴더 기준)</th></tr>
+<tr><td>단지·시설·핫스팟·필지·알림 등 모든 업무 데이터</td><td><code>data\db.json</code></td></tr>
+<tr><td>업로드 파일 · 도면(SHP/DXF 원본과 변환본)</td><td><code>data\uploads\</code>, <code>data\drawings\</code></td></tr>
+<tr><td>생성된 타일·미리보기·분석 캐시</td><td><code>data\tiles\</code>, <code>data\previews\</code>, <code>data\analysis\</code></td></tr>
+<tr><td>지오코더 키·캐시</td><td><code>data\geocode-settings.json</code>, <code>data\geocode-cache.json</code></td></tr>
+<tr><td>실측 원본(DJI Terra 등)</td><td>원래 폴더를 그대로 참조(복사하지 않음)</td></tr>
+</table>
+<div class="box warn"><b class="t">백업</b>정기적으로 <code>data\db.json</code>(필요 시 <code>data\drawings\</code> 포함)을 복사해 두세요. 서버를 끈 상태에서 복사하는 것이 가장 안전합니다.</div>
+
+<h2>4.2 다른 컴퓨터로 옮겨 쓰기</h2>
+<p>3D·열화상 실측 데이터는 별도 폴더(<code>PICT_INDUSTRIAL_DATA</code>)에 모아 둘 수 있고, 폴더 안 <code>README.txt</code>의 순서를 따릅니다.</p>
+<ol class="steps">
+<li>새 PC에 Node.js 20+ 설치, 프로젝트를 GitHub에서 받습니다: <code>git clone https://github.com/bigsam73/kermit.git</code> (비공개 저장소라 로그인 필요).</li>
+<li><code>npm install</code> → <code>npm run build</code>.</li>
+<li>데이터 폴더에서: <code>node import-portable-data.mjs --project C:\경로\kermit</code> — 데이터셋 경로가 새 PC 기준으로 연결됩니다.</li>
+<li><code>npm start</code> → <b>http://localhost:3200/</b>.</li>
+</ol>
+<ul>
+<li>브이월드 키는 보안상 폴더·GitHub에 포함되지 않으므로 <b>새 PC에서 다시 입력</b>합니다.</li>
+<li>열화상 재분석·SHP/DXF 변환·새 정사영상 등록에는 <b>QGIS(GDAL)</b>가 필요합니다. 보기만 하면 불필요.</li>
+<li>폴더 위치를 옮기면 import 스크립트를 다시 실행하세요.</li>
+</ul>
+
+<h1 id="s5">5. 문제 해결 (FAQ)</h1>
+<table>
+<tr><th style="width:32%">증상</th><th>확인·해결</th></tr>
+<tr><td>데이터(원주 등)가 보이지 않는다</td><td>주소가 <b>http://localhost:3200/</b>인지 확인 → <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>. 열화상 메뉴에 "서버에서 받지 못했습니다"가 뜨면 3200 포트로 이동 버튼을 누르세요. 그래도 안 되면 서버 창을 닫고 <code>start-industrial.bat</code> 재실행.</td></tr>
+<tr><td>서버 재시작 후 이상한 응답이 번갈아 나온다</td><td>예전 서버가 3200 포트를 계속 잡고 있을 수 있습니다. 서버 창(node)을 모두 닫고 한 번만 실행하세요.</td></tr>
+<tr><td>3D 모델이 멀리서 뭉개져 보인다</td><td><b>3D 트윈 → 3D Tiles 상세도</b>를 낮추세요(기본 2). 너무 느리면 높이세요.</td></tr>
+<tr><td>핫스팟이 두 배로 나온다</td><td>예전 버전의 중복 집계입니다. 현재는 같은 비행의 결과를 하나로 교체합니다. 열화상 메뉴에서 다시 분석하면 정리됩니다.</td></tr>
+<tr><td>지오코딩이 엉뚱하거나 부정확하다</td><td>브이월드 키 등록 여부 확인. 없으면 OSM(동·리 수준). 존재하지 않는 번지는 읍·면·동 중심으로 찍히고 "정확도 낮음"으로 표시됩니다.</td></tr>
+<tr><td>지적도(노란 선)가 안 보인다</td><td>지도를 <b>1.5 km 이하</b>로 확대, 토글 ON, 브이월드 키 등록 확인. 인터넷 연결이 필요합니다.</td></tr>
+<tr><td>필지 클릭 시 "필지를 찾지 못했습니다"</td><td>지적도가 로드되는 높이(1 km 이하)인지, 노란 경계가 보이는지 확인. 위에서 내려다보는 각도에서 다시 클릭.</td></tr>
+<tr><td>도면이 엉뚱한 곳에 나온다</td><td>도면 카드의 <b>다시 변환</b>에서 좌표계를 변경(중부원점 5186/5174, UTM-K 5179 등).</td></tr>
+<tr><td>도면 글자가 깨진다</td><td>인코딩을 CP949(한글 윈도우) 또는 UTF-8로 바꿔 다시 변환.</td></tr>
+<tr><td>SHP 업로드 시 .dbf/.shx 오류</td><td>SHP는 구성 파일을 모두 함께 선택하거나 zip으로 묶어 올리세요.</td></tr>
+<tr><td>CSV 글자가 깨진다</td><td>엑셀에서 "CSV UTF-8" 또는 "CSV(쉼표로 분리)"로 저장하세요(둘 다 자동 인식).</td></tr>
+<tr><td>열화상 분석이 너무 느리다/실패</td><td>QGIS(GDAL) 설치 여부 확인(설정 → 시스템 상태). 큰 TIFF 축소에 GDAL을 사용합니다.</td></tr>
+</table>
+
+<h1 id="s6">6. 부록</h1>
+
+<h2>A. CSV 양식 (주소 일괄 입력)</h2>
+<table>
+<tr><th>열 이름(예)</th><th>필수</th><th>설명</th></tr>
+<tr><td>업체명</td><td>권장</td><td>상호. 지도 라벨과 시설명에 사용</td></tr>
+<tr><td>주소</td><td>필수*</td><td>지번 또는 도로명 주소 (*경도·위도가 있으면 생략 가능)</td></tr>
+<tr><td>대지면적</td><td>선택</td><td>㎡. 경계가 없을 때 근사 도형 크기에 사용</td></tr>
+<tr><td>업종</td><td>선택</td><td>factory / warehouse / office / utility / treatment / vacant 이면 시설 유형으로 사용</td></tr>
+<tr><td>경도, 위도</td><td>선택</td><td>있으면 지오코딩 없이 사용 (WGS84)</td></tr>
+</table>
+<pre style="background:#f1f5f9;padding:8px;border-radius:5px;font-size:9pt">업체명,주소,대지면적,업종
+(주)샘플정밀,강원특별자치도 원주시 문막읍 문막리 1234-5,2400,factory
+한빛물류,강원특별자치도 원주시 지정면 가곡리 567,5200,warehouse</pre>
+
+<h2>B. 지원 파일 형식</h2>
+<table>
+<tr><th style="width:26%">종류</th><th>형식</th></tr>
+<tr><td>정사영상·열화상·DSM</td><td>GeoTIFF (열화상은 온도 Float32 °C 권장), DJI Terra 타일 폴더</td></tr>
+<tr><td>3D</td><td>3D Tiles: b3dm(DJI Terra), iTwin/RealityScan tileset, 포인트클라우드(pnts)</td></tr>
+<tr><td>도면</td><td>SHP(.shp+.dbf+.shx+.prj+.cpg 또는 .zip), DXF, GeoJSON, KML, GPKG</td></tr>
+<tr><td>사진</td><td>JPG/TIF (EXIF GPS), 폴더 단위 등록</td></tr>
+<tr><td>목록</td><td>CSV (UTF-8, CP949)</td></tr>
+</table>
+
+<h2>C. 자동 판별하는 국내 좌표계</h2>
+<p>Korea 2000 중부/서부/동부/동해원점(EPSG:5186·5185·5187·5188, 5181·5180·5182), UTM-K(5179), 구 Bessel 지적 좌표계 중부/서부/동부(5174·5173·5175), WGS84 UTM 51N/52N, WGS84 경위도(4326).</p>
+
+<h2>D. 용어</h2>
+<table>
+<tr><th style="width:22%">용어</th><th>설명</th></tr>
+<tr><td>핫스팟</td><td>주변보다 비정상적으로 뜨거운 지점. 태양광 셀·바이패스 다이오드 결함, 전기 설비 과열 등을 의심</td></tr>
+<tr><td>ΔT</td><td>기준 온도 대비 상승 온도(°C)</td></tr>
+<tr><td>정사영상(Ortho)</td><td>드론 사진을 지도 좌표에 맞춰 이어 붙인 위에서 본 영상</td></tr>
+<tr><td>DSM</td><td>건물·수목을 포함한 지표 높이 모델</td></tr>
+<tr><td>3D Tiles</td><td>대용량 3D 모델 스트리밍 형식(b3dm 등)</td></tr>
+<tr><td>PNU</td><td>필지고유번호(19자리). 지적도 필지를 식별</td></tr>
+<tr><td>지오코딩</td><td>주소 문자열을 지도 좌표로 바꾸는 작업</td></tr>
+<tr><td>방사율</td><td>열화상 온도 계산에 쓰는 표면 특성 값(0.95 기본). 같은 비행의 변형 영상</td></tr>
+<tr><td>kWp</td><td>태양광 설비 용량 단위</td></tr>
+</table>
+
+<div class="box note" style="margin-top:20px"><b class="t">문의·유지보수</b>PICT · psy@pict.kr · 기능 상세와 API는 프로젝트 폴더의 <code>README-INDUSTRIAL.md</code>.</div>
+</body></html>
