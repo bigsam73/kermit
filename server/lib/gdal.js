@@ -48,10 +48,10 @@ export function findGdal() {
     return null;
 }
 
-export function run(exe, args, { cwd, onProgress } = {}) {
+export function run(exe, args, { cwd, onProgress, env } = {}) {
     const g = findGdal();
     return new Promise((resolve, reject) => {
-        const child = spawn(exe, args, { cwd, env: g?.env || process.env, windowsHide: true });
+        const child = spawn(exe, args, { cwd, env: env || g?.env || process.env, windowsHide: true });
         let out = '';
         let err = '';
         child.stdout.on('data', (d) => {

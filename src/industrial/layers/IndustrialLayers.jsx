@@ -4,6 +4,7 @@ import * as Cesium from 'cesium';
 import useStore from '../../store/useStore';
 import useIndustrialStore from '../store';
 import { api } from '../api';
+import { ParcelsLayer, DrawingsLayer, CadastralLayer, LotPicker } from './GeoLayers';
 import { FACILITY_COLORS, FACILITY_LABELS, HEALTH_COLORS, HEALTH_LABELS, SEVERITY_COLORS, SEVERITY_LABELS, THERMAL_PALETTES, DOCK_STATE_LABELS } from '../constants';
 
 const css = (hex, alpha = 1) => Cesium.Color.fromCssColorString(hex).withAlpha(alpha);
@@ -645,6 +646,10 @@ export default function IndustrialLayers({ viewer }) {
             <ImageryOverlays viewer={viewer} />
             <Tiles3DLayer viewer={viewer} />
             <SitesLayer viewer={viewer} />
+            <CadastralLayer viewer={viewer} />
+            <LotPicker viewer={viewer} />
+            <DrawingsLayer viewer={viewer} />
+            <ParcelsLayer viewer={viewer} />
             <FacilitiesLayer viewer={viewer} />
             <SolarPanelsLayer viewer={viewer} />
             <HotspotsLayer viewer={viewer} />

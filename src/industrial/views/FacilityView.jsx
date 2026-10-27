@@ -65,7 +65,7 @@ export default function FacilityView() {
                         <Stat label="상시 인원" value={fmt(sel.employees)} unit="명" />
                         <Stat label="월 전력" value={fmt(sel.energyKwhMonth / 1000, 1)} unit="MWh" />
                     </div>
-                    <div className="gi-muted">필지 {sel.lotNo} · {sel.floors}층 · 지붕 {sel.roofType || '-'} · 유해요인 {sel.hazard} · 최근 점검 {sel.lastInspection}</div>
+                    <div className="gi-muted">필지 {sel.lotNo} · {sel.floors}층 · 지붕 {sel.roofType || '-'}{sel.buildingUse ? ` · 용도 ${sel.buildingUse}` : ''} · 유해요인 {sel.hazard} · 최근 점검 {sel.lastInspection}</div>
                     <div className="gi-muted">태양광: {pvOf(sel).length ? `${pvOf(sel).length}개 어레이 · ${fmt(pvOf(sel).reduce((s, a) => s + a.capacityKwp, 0))} kWp` : `미설치 (잠재 ${fmt((sel.roofAreaSqm * 0.6 * 0.78) / 2.2 * 0.55)} kWp 설치 가능)`}</div>
                     <div className="gi-row">
                         <Button size="xs" onClick={() => flyTo({ lon: sel.lon, lat: sel.lat, height: 320, pitch: -55 })}>위치로 이동</Button>

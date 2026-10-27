@@ -6,7 +6,7 @@ import { randomUUID } from 'node:crypto';
 
 export const COLLECTIONS = [
     'sites', 'facilities', 'panelArrays', 'datasets', 'alerts', 'hotspots',
-    'inspections', 'missions', 'docks', 'sensors', 'photos', 'reports', 'workOrders',
+    'inspections', 'missions', 'docks', 'sensors', 'photos', 'reports', 'workOrders', 'parcels', 'drawings',
 ];
 
 export class Store {

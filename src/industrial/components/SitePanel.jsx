@@ -8,6 +8,9 @@ import ThermalView from '../views/ThermalView';
 import SolarView from '../views/SolarView';
 import TwinView from '../views/TwinView';
 import FacilityView from '../views/FacilityView';
+import ParcelView from '../views/ParcelView';
+import LotsView from '../views/LotsView';
+import DrawingsView from '../views/DrawingsView';
 import EnvView from '../views/EnvView';
 import SafetyView from '../views/SafetyView';
 import DroneView from '../views/DroneView';
@@ -21,6 +24,9 @@ const VIEWS = {
     solar: SolarView,
     twin: TwinView,
     facility: FacilityView,
+    lots: LotsView,
+    parcel: ParcelView,
+    cad: DrawingsView,
     env: EnvView,
     safety: SafetyView,
     drone: DroneView,

@@ -11,6 +11,7 @@ import { seedDatabase } from './seed.js';
 import { coreRouter } from './routes/core.js';
 import { datasetsRouter } from './routes/datasets.js';
 import { externalRouter } from './routes/external.js';
+import { geoRouter } from './routes/geo.js';
 import { findGdal, gdalStatus } from './lib/gdal.js';
 import { analyzeThermal } from './lib/thermal.js';
 import { arrayHealthFromHotspots } from './lib/pv.js';
@@ -72,6 +73,7 @@ const sim = startSimulator(store, Number(process.env.TELEMETRY_INTERVAL_MS || 50
 app.use('/api', coreRouter(store, sim));
 app.use('/api', datasetsRouter(store));
 app.use('/api', externalRouter(store));
+app.use('/api', geoRouter(store));
 
 app.get('/api/health', (req, res) => res.json({ ok: true, sse: clientCount(), gdal: gdalStatus(), sites: store.list('sites').length, now: new Date().toISOString() }));
 

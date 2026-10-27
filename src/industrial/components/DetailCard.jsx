@@ -12,6 +12,7 @@ export default function DetailCard() {
     const selected = useIndustrialStore((s) => s.selected);
     const setSelected = useIndustrialStore((s) => s.setSelected);
     const facilities = useIndustrialStore((s) => s.facilities);
+    const parcels = useIndustrialStore((s) => s.parcels);
     const panelArrays = useIndustrialStore((s) => s.panelArrays);
     const hotspots = useIndustrialStore((s) => s.hotspots);
     const sensors = useIndustrialStore((s) => s.sensors);
@@ -51,6 +52,13 @@ export default function DetailCard() {
             <Button key="fac" onClick={() => setMenu('facility')}>시설 메뉴</Button>,
             pv.length ? <Button key="pv" onClick={() => { setSelected({ type: 'panelArray', id: pv[0].id }); setMenu('solar'); }}>PV 보기</Button> : null,
         ];
+    } else if (sel.type === 'parcel') {
+        const pc = parcels.find((x) => x.id === sel.id);
+        if (!pc) return null;
+        title = pc.company || pc.name || pc.address;
+        badge = <Badge color={pc.geometrySource === 'cadastral' ? '#38bdf8' : '#fbbf24'}>{pc.geometrySource === 'cadastral' ? '지적도 경계' : pc.geometrySource === 'osm' ? 'OSM 경계' : '근사 도형'}</Badge>;
+        items = [['주소', pc.address], ['대표자', pc.ceo], ['업종', pc.industry], ['연락처', pc.phone], ['비고', pc.memo], ['층수', pc.floors ? `지상 ${pc.floors}층${pc.basementFloors ? ` / 지하 ${pc.basementFloors}층` : ''}` : null], ['건축물 용도', pc.usageName ? `${pc.usageName}${pc.usageList?.length > 1 ? ` 외 ${pc.usageList.length - 1}종` : ''}` : null], ['건물 수', pc.bldCount != null ? `${pc.bldCount}동` : null], ['건축면적', pc.bldArchAreaSqm ? `${Number(pc.bldArchAreaSqm).toLocaleString('ko-KR')} ㎡` : null], ['연면적', pc.bldTotalAreaSqm ? `${Number(pc.bldTotalAreaSqm).toLocaleString('ko-KR')} ㎡` : null], ['구조', pc.structure], ['사용승인', pc.approvedFirst ? `${String(pc.approvedFirst).replace(/^(\d{4})(\d{2})(\d{2})$/, '$1-$2-$3')}${pc.approvedLast && pc.approvedLast !== pc.approvedFirst ? ' ~ ' + String(pc.approvedLast).replace(/^(\d{4})(\d{2})(\d{2})$/, '$1-$2-$3') : ''}` : null], ['건폐율/용적률', pc.bcRat ? `${pc.bcRat}% / ${pc.vlRat}%` : null], ['필지번호', pc.lotNo], ['PNU', pc.pnu], ['면적', pc.areaSqm ? `${fmt(pc.areaSqm)} ㎡` : null], ['정확도', pc.accuracy === 'area' ? '동·리 수준(부정확)' : pc.accuracy], ['지오코더', pc.provider], ['시설 등록', pc.facilityId ? '등록됨' : '미등록'], ...Object.entries(pc.attrs || {}).slice(0, 8)];
+        actions = [<Button key="pc" onClick={() => setMenu('parcel')}>주소·필지 메뉴</Button>];
     } else if (sel.type === 'panelArray') {
         const a = panelArrays.find((x) => x.id === sel.id);
         if (!a) return null;
@@ -111,6 +119,7 @@ export default function DetailCard() {
 
     const target = (() => {
         if (sel.type === 'facility') { const f = facilities.find((x) => x.id === sel.id); return f && { lon: f.lon, lat: f.lat }; }
+        if (sel.type === 'parcel') { const pc = parcels.find((x) => x.id === sel.id); return pc?.lon != null && { lon: pc.lon, lat: pc.lat, height: 260 }; }
         if (sel.type === 'panelArray') {
             const a = panelArrays.find((x) => x.id === sel.id);
             const f = a && facilities.find((x) => x.id === a.facilityId);

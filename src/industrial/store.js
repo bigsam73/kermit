@@ -11,6 +11,10 @@ const useIndustrialStore = create((set, get) => ({
     panelOpen: true,
 
     facilities: [],
+    parcels: [],
+    drawings: [],
+    lotPick: { active: false, picked: [], hint: null },
+    parcelUi: { visible: true, labels: true, colorBy: 'source', cadastral: localStorage.getItem('gi:cadastral') === '1' },
     panelArrays: [],
     datasets: [],
     hotspots: [],
@@ -49,6 +53,8 @@ const useIndustrialStore = create((set, get) => ({
     setDrawMode: (mode) => set({ drawMode: mode }),
     flyTo: (target) => set({ flyRequest: { ...target, token: Date.now() } }),
     setHighlightHotspot: (id) => set({ highlightHotspotId: id }),
+    setLotPick: (patch) => set((s) => ({ lotPick: { ...s.lotPick, ...patch } })),
+    setParcelUi: (patch) => set((s) => ({ parcelUi: { ...s.parcelUi, ...patch } })),
     setThermalOption: (patch) => set((s) => ({ thermal: { ...s.thermal, ...patch } })),
     setOverlay: (datasetId, patch) =>
         set((s) => ({ overlayState: { ...s.overlayState, [datasetId]: { visible: true, opacity: 1, ...(s.overlayState[datasetId] || {}), ...patch } } })),
@@ -81,16 +87,17 @@ const useIndustrialStore = create((set, get) => ({
 
     loadSite: async (siteId) => {
         const q = `?siteId=${encodeURIComponent(siteId)}`;
-        const [facilities, panelArrays, datasets, hotspots, alerts, sensors, docks, missions, inspections, workOrders, photos] = await Promise.all([
+        const [facilities, panelArrays, datasets, hotspots, alerts, sensors, docks, missions, inspections, workOrders, photos, parcels, drawings] = await Promise.all([
             api.get(`/api/facilities${q}`), api.get(`/api/panelArrays${q}`), api.get(`/api/datasets${q}`), api.get(`/api/hotspots${q}`),
             api.get(`/api/alerts${q}`), api.get(`/api/sensors${q}`), api.get(`/api/docks${q}`), api.get(`/api/missions${q}`),
             api.get(`/api/inspections${q}`), api.get(`/api/workOrders${q}`), api.get(`/api/photos${q}&limit=2000`),
+            api.get(`/api/parcels${q}`).catch(() => []), api.get(`/api/drawings${q}`).catch(() => []),
         ]);
         const overlayState = { ...get().overlayState };
         datasets.forEach((d) => {
             if (!overlayState[d.id]) overlayState[d.id] = { visible: Boolean(d.visibleByDefault), opacity: d.type === 'thermal' ? 0.85 : 1 };
         });
-        set({ facilities, panelArrays, datasets, hotspots, alerts, sensors, docks, missions, inspections, workOrders, photos, overlayState, loadError: null });
+        set({ facilities, parcels, drawings, panelArrays, datasets, hotspots, alerts, sensors, docks, missions, inspections, workOrders, photos, overlayState, loadError: null });
         get().refreshSummary(siteId);
         get().refreshEnvironment(siteId);
     },

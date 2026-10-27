@@ -29,6 +29,8 @@ export default function IndustrialRuntime() {
             thermal: () => { st().refreshCollection('hotspots'); st().refreshCollection('panelArrays'); st().refreshCollection('inspections'); st().refreshSummary(); },
             photos: () => st().refreshCollection('photos'),
             facilities: () => st().refreshCollection('facilities'),
+            parcels: () => st().refreshCollection('parcels'),
+            drawings: () => st().refreshCollection('drawings'),
             panelArrays: () => st().refreshCollection('panelArrays'),
             sensors: () => st().refreshCollection('sensors'),
             docks: () => st().refreshCollection('docks'),
