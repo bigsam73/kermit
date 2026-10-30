@@ -1,12 +1,13 @@
 // 공통 UI 프리미티브 (관제 패널용)
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Icon, autoIconName } from '../icons';
 
-export function Section({ title, right, children, className = '' }) {
+export function Section({ title, right, children, className = '', icon }) {
     return (
         <section className={`gi-section ${className}`}>
             {(title || right) && (
                 <header className="gi-section-head">
-                    <span>{title}</span>
+                    <span className="gi-section-title">{icon ?? (autoIconName(title) ? <Icon name={autoIconName(title)} size={14} /> : null)}{title}</span>
                     {right && <span className="gi-section-right">{right}</span>}
                 </header>
             )}
@@ -15,15 +16,93 @@ export function Section({ title, right, children, className = '' }) {
     );
 }
 
-export function Stat({ label, value, unit, tone = 'default', sub, onClick }) {
+// 기존 Stat 호출은 모두 StatCard 로 렌더링(키워드로 아이콘 자동 선택). 아이콘이 필요 없으면 icon={null}
+export function Stat({ label, value, unit, tone = 'default', sub, onClick, icon, delta, spark }) {
+    const name = icon === undefined ? autoIconName(label) : null;
+    const node = icon !== undefined ? icon : name ? <Icon name={name} size={15} /> : null;
+    return <StatCard icon={node} label={label} value={value} unit={unit} tone={tone} sub={sub} onClick={onClick} delta={delta} spark={spark} />;
+}
+
+// 숫자 카운트업(0.7s, ease-out-expo). 숫자로 읽히지 않는 값/모션 줄이기에서는 그대로 표시
+export function AnimNumber({ value }) {
+    const text = typeof value === 'number' ? String(value) : typeof value === 'string' ? value : '';
+    const plain = text.replace(/,/g, '');
+    const numeric = /^-?\d+(\.\d+)?$/.test(plain);
+    const target = numeric ? Number(plain) : 0;
+    const decimals = numeric && plain.includes('.') ? plain.split('.')[1].length : 0;
+    const [shown, setShown] = useState(target);
+    const from = useRef(target);
+    useEffect(() => {
+        if (!numeric) return undefined;
+        const reduced = document.documentElement.dataset.giMotion === 'reduced' || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+        if (reduced || from.current === target) { from.current = target; setShown(target); return undefined; }
+        const start = from.current, t0 = performance.now(), dur = 700;
+        let raf;
+        const ease = (t) => (t >= 1 ? 1 : 1 - 2 ** (-10 * t));
+        const tick = (now) => {
+            const k = Math.min(1, (now - t0) / dur);
+            setShown(start + (target - start) * ease(k));
+            if (k < 1) raf = requestAnimationFrame(tick); else from.current = target;
+        };
+        raf = requestAnimationFrame(tick);
+        return () => { cancelAnimationFrame(raf); from.current = target; };
+    }, [target, numeric]);
+    if (!numeric) return <>{value}</>;
+    return <>{shown.toLocaleString('ko-KR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}</>;
+}
+
+// Tabler 식 통계 카드: 아이콘 칩 + 값 + 증감 + 미니 스파크라인
+const TONE_COLOR = { ok: '#22c55e', warn: '#f59e0b', bad: '#ef4444', accent: 'var(--gi-accent)', default: '#94a3b8' };
+export function StatCard({ icon, label, value, unit, sub, tone = 'default', delta, spark, onClick }) {
+    const color = TONE_COLOR[tone] || TONE_COLOR.default;
+    const W = 100, H = 20;
+    let line = null;
+    if (spark && spark.length > 2) {
+        const mn = Math.min(...spark), mx = Math.max(...spark), span = mx - mn || 1;
+        line = spark.map((v, i) => `${((i / (spark.length - 1)) * W).toFixed(1)},${(H - 2 - ((v - mn) / span) * (H - 4)).toFixed(1)}`).join(' ');
+    }
     return (
-        <div className={`gi-stat gi-stat--${tone} ${onClick ? 'is-clickable' : ''}`} onClick={onClick}>
-            <div className="gi-stat-label">{label}</div>
-            <div className="gi-stat-value">
-                {value}
-                {unit && <span className="gi-stat-unit">{unit}</span>}
+        <div className={`gi-statcard ${onClick ? 'is-clickable' : ''}`} style={{ '--c': color }} onClick={onClick} role={onClick ? 'button' : undefined} tabIndex={onClick ? 0 : undefined} onKeyDown={onClick ? (e) => e.key === 'Enter' && onClick() : undefined}>
+            <div className="gi-statcard-top">
+                {icon && <span className="gi-statcard-ic">{icon}</span>}
+                <span className="gi-statcard-label">{label}</span>
             </div>
-            {sub && <div className="gi-stat-sub">{sub}</div>}
+            <div className="gi-statcard-value">
+                <AnimNumber value={value} />{unit && <small>{unit}</small>}
+                {delta != null && Math.abs(delta) >= 0.05 && <span className={`gi-delta ${delta > 0 ? 'up' : 'down'}`}>{delta > 0 ? '▲' : '▼'} {Math.abs(delta).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}</span>}
+            </div>
+            {sub && <div className="gi-statcard-sub">{sub}</div>}
+            {line && <svg className="gi-statcard-spark" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden="true"><polyline points={line} fill="none" stroke={color} strokeWidth="1.6" strokeLinejoin="round" vectorEffect="non-scaling-stroke" /></svg>}
+        </div>
+    );
+}
+
+// Tabler 식 누적 막대(진행률 스택) + 범례
+export function StackBar({ items, height = 10 }) {
+    const total = items.reduce((a, i) => a + i.value, 0) || 1;
+    return (
+        <div>
+            <div className="gi-stackbar" style={{ height }} role="img" aria-label={items.map((i) => `${i.label} ${i.value}`).join(', ')}>
+                {items.filter((i) => i.value > 0).map((i) => <span key={i.label} style={{ width: `${(i.value / total) * 100}%`, background: i.color }} title={`${i.label} ${i.value}`} />)}
+            </div>
+            <div className="gi-stackbar-legend">
+                {items.map((i) => <span key={i.label}><i style={{ background: i.color }} />{i.label} <b>{i.value}</b></span>)}
+            </div>
+        </div>
+    );
+}
+
+// Grafana 식 임계값 막대 게이지: thresholds=[{at, color}] 오름차순, 값에 맞는 색 사용
+export function ThresholdBar({ value, max = 100, thresholds, unit = '%', label }) {
+    const pct = Math.max(0, Math.min(100, (value / (max || 1)) * 100));
+    const color = [...thresholds].reverse().find((t) => pct >= t.at)?.color || thresholds[0].color;
+    return (
+        <div className="gi-thbar">
+            <div className="gi-between"><span className="gi-muted">{label}</span><b style={{ color }}>{Math.round(pct)}{unit}</b></div>
+            <div className="gi-thbar-track">
+                <div className="gi-thbar-fill" style={{ width: `${pct}%`, background: color }} />
+                {thresholds.slice(1).map((t) => <i key={t.at} className="gi-thbar-tick" style={{ left: `${t.at}%` }} />)}
+            </div>
         </div>
     );
 }

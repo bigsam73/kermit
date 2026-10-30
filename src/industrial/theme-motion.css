@@ -1,0 +1,138 @@
+/* ═══ MotionSites 디자인 규칙 적용 (github.com/Motionsites-AI/claude-skill: craft · surfaces · motion) ═══
+   · 한 가지 재질(리퀴드 글래스)을 모든 패널에 재사용 — 그라데이션 헤어라인 림(위·아래가 밝고 옆은 사라짐)
+   · 위계는 색이 아니라 불투명도, 숫자는 tabular-nums + 좁은 자간
+   · 입장 모션: opacity 0→1 + translateY 20px + blur → 0, 0.8s ease-out-expo, 스태거
+   · 호버는 작게(150–300ms), :active scale .97, prefers-reduced-motion 분기, 정지 상태는 항상 보이게
+   재질/모션은 화면 스타일 메뉴(data-gi-material / data-gi-motion)에서 끄고 켠다. */
+:root {
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --gi-rim-a: 0.45;
+  --gi-rim-b: 0.14;
+}
+:root[data-gi-theme='light'] { --gi-rim-a: 0.9; --gi-rim-b: 0.5; }
+
+/* 재질: 리퀴드 글래스 */
+:root[data-gi-material='glass'] .godseye-app .gi-sidenav.glass-panel,
+:root[data-gi-material='glass'] .godseye-app .gi-panel.glass-panel,
+:root[data-gi-material='glass'] .godseye-app .gi-detail.glass-panel,
+:root[data-gi-material='glass'] .godseye-app .gi-kpi.glass-panel,
+:root[data-gi-material='glass'] .godseye-app .gi-chip.glass-panel,
+:root[data-gi-material='glass'] .godseye-app .gi-thermal-legend.glass-panel {
+  background: color-mix(in srgb, var(--gi-surface) 66%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  backdrop-filter: blur(16px) saturate(1.3);
+  border: none;
+  box-shadow: inset 0 1px 1px rgb(var(--gi-fg-rgb) / 0.1), 0 12px 32px rgb(0 0 0 / 0.28);
+}
+:root[data-gi-material='glass'] .godseye-app .gi-panel.glass-panel,
+:root[data-gi-material='glass'] .godseye-app .gi-detail.glass-panel,
+:root[data-gi-material='glass'] .godseye-app .gi-sidenav.glass-panel { background: color-mix(in srgb, var(--gi-surface) 74%, transparent); }
+:root[data-gi-material='glass'] .godseye-app .gi-sidenav.glass-panel,
+:root[data-gi-material='glass'] .godseye-app .gi-panel.glass-panel,
+:root[data-gi-material='glass'] .godseye-app .gi-detail.glass-panel { border-radius: 16px; }
+:root[data-gi-material='glass'] .godseye-app .gi-kpi.glass-panel { border-radius: 14px; }
+:root[data-gi-material='glass'] .godseye-app .gi-chip.glass-panel { border-radius: 999px; padding: 5px 12px; }
+:root[data-gi-material='glass'] .godseye-app .gi-thermal-legend.glass-panel { border-radius: 12px; }
+
+/* 림: ::before 를 스캔라인 대신 그라데이션 헤어라인으로 (padding + mask-composite) */
+:root[data-gi-material='glass'] .glass-panel.gi-sidenav::before,
+:root[data-gi-material='glass'] .glass-panel.gi-panel::before,
+:root[data-gi-material='glass'] .glass-panel.gi-detail::before,
+:root[data-gi-material='glass'] .glass-panel.gi-kpi::before,
+:root[data-gi-material='glass'] .glass-panel.gi-chip::before,
+:root[data-gi-material='glass'] .glass-panel.gi-thermal-legend::before,
+:root[data-gi-material='glass'] .glass-panel.gi-floating::before {
+  display: block;
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.2px;
+  pointer-events: none;
+  z-index: 2;
+  background: linear-gradient(180deg,
+    rgb(var(--gi-fg-rgb) / var(--gi-rim-a)) 0%, rgb(var(--gi-fg-rgb) / var(--gi-rim-b)) 20%, transparent 40%,
+    transparent 60%, rgb(var(--gi-fg-rgb) / var(--gi-rim-b)) 80%, rgb(var(--gi-fg-rgb) / var(--gi-rim-a)) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+/* 겹치는 떠 있는 패널(스타일 메뉴·알림 센터)은 뒤가 비치지 않게 거의 불투명 + 강한 블러 */
+:root[data-gi-material='glass'] .godseye-app .gi-floating.glass-panel {
+  background: color-mix(in srgb, var(--gi-surface) 92%, transparent);
+  -webkit-backdrop-filter: blur(30px);
+  backdrop-filter: blur(30px);
+  border: none;
+  border-radius: 16px;
+}
+
+/* 하위 카드는 테두리 대신 은은한 면으로 */
+:root[data-gi-material='glass'] .gi-statcard,
+:root[data-gi-material='glass'] .gi-section,
+:root[data-gi-material='glass'] .gi-stat { border-color: rgb(var(--gi-fg-rgb) / 0.07); border-radius: 12px; background: rgb(var(--gi-fg-rgb) / 0.035); }
+:root[data-gi-material='glass'] .gi-statcard { box-shadow: inset 0 1px 0 rgb(var(--gi-fg-rgb) / 0.06); }
+
+/* 타이포: 숫자는 tabular-nums + 좁은 자간, 섹션 라벨은 넓은 자간 */
+.gi-statcard-value, .gi-kpi-value, .gi-stat-value { letter-spacing: -0.025em; font-feature-settings: 'tnum'; }
+.gi-section-head { letter-spacing: 0.06em; font-weight: 600; }
+.gi-nav-group, .gi-stylemenu h4 { letter-spacing: 0.16em; opacity: 0.7; }
+.gi-statcard-label, .gi-kpi-label { letter-spacing: 0.02em; }
+.godseye-app { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+/* 인터랙션: 호버는 작게, 눌림은 .97 */
+.gi-sidenav-item, .gi-btn, .gi-opt, .gi-chip, .gi-statcard, .gi-list-item, .gi-ac-item {
+  transition: background-color 0.2s var(--ease-out-quint), border-color 0.2s var(--ease-out-quint), color 0.2s, transform 0.2s var(--ease-out-quint), box-shadow 0.25s;
+}
+.gi-btn:active:not(:disabled), .gi-opt:active, .gi-chip.is-clickable:active, .gi-sidenav-item:active { transform: scale(0.97); }
+.gi-chip.is-clickable:hover { transform: translateY(-1px); }
+:root[data-gi-nav='grouped'] .gi-sidenav-item:hover:not(.is-active) { transform: translateX(2px); }
+.gi-sidenav-item.is-active { box-shadow: inset 2px 0 0 var(--gi-accent), 0 0 18px rgb(var(--gi-accent-rgb) / 0.16); }
+
+/* 입장 모션 (fill-mode backwards: 끝나면 원래 상태로 돌아가 호버 transform 을 막지 않음) */
+@keyframes gi-rise {
+  from { opacity: 0; transform: translateY(20px); filter: blur(8px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes gi-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes gi-settle { from { opacity: 0; transform: scale(0.96) translateY(8px); } to { opacity: 1; transform: none; } }
+
+:root:not([data-gi-motion='reduced']) .gi-panel-body > * { animation: gi-rise 0.8s var(--ease-out-expo) backwards; }
+:root:not([data-gi-motion='reduced']) .gi-panel-body > *:nth-child(1) { animation-delay: 0.02s; }
+:root:not([data-gi-motion='reduced']) .gi-panel-body > *:nth-child(2) { animation-delay: 0.08s; }
+:root:not([data-gi-motion='reduced']) .gi-panel-body > *:nth-child(3) { animation-delay: 0.14s; }
+:root:not([data-gi-motion='reduced']) .gi-panel-body > *:nth-child(4) { animation-delay: 0.2s; }
+:root:not([data-gi-motion='reduced']) .gi-panel-body > *:nth-child(5) { animation-delay: 0.26s; }
+:root:not([data-gi-motion='reduced']) .gi-panel-body > *:nth-child(n+6) { animation-delay: 0.32s; }
+:root:not([data-gi-motion='reduced']) .gi-kpi-strip .gi-kpi { animation: gi-rise 0.8s var(--ease-out-expo) backwards; }
+:root:not([data-gi-motion='reduced']) .gi-kpi-strip .gi-kpi:nth-child(2) { animation-delay: 0.06s; }
+:root:not([data-gi-motion='reduced']) .gi-kpi-strip .gi-kpi:nth-child(3) { animation-delay: 0.12s; }
+:root:not([data-gi-motion='reduced']) .gi-kpi-strip .gi-kpi:nth-child(4) { animation-delay: 0.18s; }
+:root:not([data-gi-motion='reduced']) .gi-sidenav { animation: gi-fade 0.6s ease-out backwards; }
+:root:not([data-gi-motion='reduced']) .gi-sidenav .gi-sidenav-item { animation: gi-rise 0.7s var(--ease-out-expo) backwards; }
+:root:not([data-gi-motion='reduced']) .gi-sidenav .gi-sidenav-item:nth-child(3n+2) { animation-delay: 0.05s; }
+:root:not([data-gi-motion='reduced']) .gi-sidenav .gi-sidenav-item:nth-child(3n) { animation-delay: 0.1s; }
+:root:not([data-gi-motion='reduced']) .gi-chip-row > * { animation: gi-fade 0.7s ease-out backwards; }
+:root:not([data-gi-motion='reduced']) .gi-stylemenu,
+:root:not([data-gi-motion='reduced']) .gi-alertcenter,
+:root:not([data-gi-motion='reduced']) .gi-detail { animation: gi-settle 0.5s var(--ease-out-expo) backwards; }
+:root:not([data-gi-motion='reduced']) .gi-palette { animation: gi-settle 0.4s var(--ease-out-expo) backwards; }
+:root:not([data-gi-motion='reduced']) .gi-tl-item { animation: gi-rise 0.7s var(--ease-out-expo) backwards; }
+:root:not([data-gi-motion='reduced']) .gi-stackbar span { animation: gi-fade 0.9s ease-out backwards; }
+
+/* 접근성: 모션 줄이기 / OS 설정 — 정지 상태가 최종 상태 */
+:root[data-gi-motion='reduced'] *,
+:root[data-gi-motion='reduced'] *::before,
+:root[data-gi-motion='reduced'] *::after { animation: none !important; transition: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  .gi-panel-body > *, .gi-kpi, .gi-sidenav, .gi-sidenav-item, .gi-chip-row > *, .gi-stylemenu, .gi-alertcenter, .gi-detail, .gi-palette, .gi-tl-item { animation: none !important; }
+}
+/* 터치 기기에서는 호버 이동 효과 제거 */
+@media (hover: none) {
+  .gi-chip.is-clickable:hover, .gi-statcard.is-clickable:hover, :root[data-gi-nav='grouped'] .gi-sidenav-item:hover:not(.is-active) { transform: none; }
+}
+
+.gi-timeline:has(> .gi-empty) { padding-left: 0; }
+.gi-timeline:has(> .gi-empty)::before { display: none; }

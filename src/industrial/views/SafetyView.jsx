@@ -44,13 +44,13 @@ export default function SafetyView() {
                     {[['open', '미확인'], ['done', '확인됨'], ['all', '전체']].map(([k, l]) => <Button key={k} size="xs" tone={tab === k ? 'primary' : 'ghost'} onClick={() => setTab(k)}>{l}</Button>)}
                 </div>
             }>
-                <div className="gi-list">
+                <div className="gi-timeline">
                     {list.map((a) => (
-                        <div key={a.id} className="gi-list-item" style={{ opacity: a.acknowledged ? 0.65 : 1 }}>
-                            <Badge color={ALERT_LEVEL_COLORS[a.level]} dot>{ALERT_LEVEL_LABELS[a.level]}</Badge>
+                        <div key={a.id} className="gi-tl-item" style={{ opacity: a.acknowledged ? 0.65 : 1, '--c': ALERT_LEVEL_COLORS[a.level] || '#94a3b8' }}>
                             <div className="min-w-0 flex-1">
-                                <div className="gi-list-title">{a.title}</div>
-                                <div className="gi-list-sub">{a.message}</div>
+                                <div className="gi-tl-time">{ALERT_LEVEL_LABELS[a.level]} · {ago(a.createdAt)}</div>
+                                <div className="gi-tl-title">{a.title}</div>
+                                <div className="gi-tl-msg">{a.message}</div>
                                 <div className="gi-row" style={{ marginTop: 4 }}>
                                     <Badge color="#94a3b8" size="xs">{CATEGORY_LABELS[a.category] || a.category}</Badge>
                                     <span className="gi-muted">{ago(a.createdAt)} · {a.source}</span>

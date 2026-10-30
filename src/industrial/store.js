@@ -31,6 +31,7 @@ const useIndustrialStore = create((set, get) => ({
     airQuality: null,
     pvForecast: null,
     telemetry: null,
+    pvHistory: [], // PV 출력(kW) 최근 샘플 — KPI 스파크라인용
     jobs: [],
     systemStatus: null,
 
@@ -75,7 +76,7 @@ const useIndustrialStore = create((set, get) => ({
 
     setActiveSite: async (siteId) => {
         localStorage.setItem('gi:activeSite', siteId);
-        set((s) => ({ activeSiteId: siteId, selected: null, highlightHotspotId: null, telemetry: null, drawMode: null, twin: { ...s.twin, tilesHeightOffset: null, tilesAutoOffset: null } }));
+        set((s) => ({ activeSiteId: siteId, selected: null, highlightHotspotId: null, telemetry: null, pvHistory: [], drawMode: null, twin: { ...s.twin, tilesHeightOffset: null, tilesAutoOffset: null } }));
         try {
             await get().loadSite(siteId);
         } catch (err) {
@@ -138,7 +139,8 @@ const useIndustrialStore = create((set, get) => ({
     // SSE 핸들러
     onTelemetry: (payload) => {
         if (payload.siteId !== get().activeSiteId) return;
-        set({ telemetry: payload });
+        const kw = payload?.pv?.totalKw;
+        set((s) => ({ telemetry: payload, pvHistory: typeof kw === 'number' ? [...s.pvHistory, kw].slice(-60) : s.pvHistory }));
     },
     onJob: (job) => set((s) => ({ jobs: [job, ...s.jobs.filter((j) => j.id !== job.id)].slice(0, 50) })),
     onDataset: (ds) => set((s) => (ds.siteId === s.activeSiteId ? { datasets: s.datasets.some((d) => d.id === ds.id) ? s.datasets.map((d) => (d.id === ds.id ? ds : d)) : [...s.datasets, ds] } : {})),

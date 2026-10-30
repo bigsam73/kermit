@@ -2,6 +2,7 @@
 import React, { Suspense } from 'react';
 import useIndustrialStore from '../store';
 import { MENUS } from '../constants';
+import { MenuIcon } from '../icons';
 import DashboardView from '../views/DashboardView';
 import ImageryView from '../views/ImageryView';
 import ThermalView from '../views/ThermalView';
@@ -49,7 +50,7 @@ export default function SitePanel() {
         <aside className={`gi-panel glass-panel pointer-events-auto gi-panel--${menu.id}`}>
             <header className="gi-panel-head">
                 <div>
-                    <div className="gi-panel-title">{menu.icon} {menu.label}</div>
+                    <div className="gi-panel-title gi-title-icon"><MenuIcon id={menu.id} size={16} /> {menu.label}</div>
                     <div className="gi-panel-desc">{menu.desc}</div>
                 </div>
                 <button className="gi-panel-close" onClick={togglePanel} title="패널 접기">‹</button>

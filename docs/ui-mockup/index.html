@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PICT INDUSTRIAL UI 목업</title>
+<style>
+:root {
+  --bg: #0b1220; --bg2: #101a2e; --panel: rgba(16,26,46,.86); --panel-solid: #101a2e;
+  --line: rgba(148,163,184,.16); --text: #e2e8f0; --dim: #8393ae;
+  --accent: #38bdf8; --accent-soft: rgba(56,189,248,.14);
+  --ok: #22c55e; --warn: #f59e0b; --bad: #ef4444;
+  --map-a: #0e1a2f; --map-b: #0a1424; --road: #1d2b45; --shadow: 0 10px 30px rgba(0,0,0,.4);
+  --rail-w: 76px; --font: 'Pretendard','Noto Sans KR','Malgun Gothic',system-ui,sans-serif;
+}
+:root[data-theme="light"] {
+  --bg: #eef2f7; --bg2: #ffffff; --panel: rgba(255,255,255,.92); --panel-solid: #fff;
+  --line: rgba(15,23,42,.12); --text: #0f172a; --dim: #5b6b85;
+  --accent: #0284c7; --accent-soft: rgba(2,132,199,.12);
+  --map-a: #dfe8f3; --map-b: #cfdbea; --road: #f8fbff; --shadow: 0 10px 30px rgba(15,23,42,.14);
+}
+* { box-sizing: border-box; margin: 0; }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; overflow: hidden; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.app { display: grid; grid-template-columns: var(--rail-w) 1fr; grid-template-rows: 56px 1fr; height: 100vh; transition: grid-template-columns .2s; }
+.app.expanded { --rail-w: 232px; }
+
+/* ── 사이드바 ── */
+.rail { grid-row: 1 / 3; background: var(--bg2); border-right: 1px solid var(--line); display: flex; flex-direction: column; overflow: hidden; z-index: 20; }
+.brand { height: 56px; display: flex; align-items: center; gap: 10px; padding: 0 18px; border-bottom: 1px solid var(--line); flex: none; }
+.logo { width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg, var(--accent), #6366f1); display: grid; place-items: center; font-weight: 800; color: #fff; flex: none; }
+.brand b { font-size: 14px; letter-spacing: .06em; white-space: nowrap; }
+.brand small { display: block; color: var(--dim); font-size: 11px; white-space: nowrap; }
+.nav { flex: 1; overflow-y: auto; padding: 8px 10px; }
+.grp { margin: 10px 0 4px; padding: 0 10px; font-size: 11px; letter-spacing: .08em; color: var(--dim); white-space: nowrap; height: 14px; overflow: hidden; }
+.app:not(.expanded) .grp { visibility: hidden; }
+.item { width: 100%; display: flex; align-items: center; gap: 12px; padding: 9px 10px; border-radius: 10px; color: var(--dim); white-space: nowrap; position: relative; text-align: left; }
+.item:hover { background: var(--accent-soft); color: var(--text); }
+.item.on { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.item.on::before { content: ''; position: absolute; left: -10px; top: 8px; bottom: 8px; width: 3px; border-radius: 3px; background: var(--accent); }
+.item .ic { width: 22px; text-align: center; font-size: 17px; flex: none; }
+.item .badge { margin-left: auto; background: var(--bad); color: #fff; border-radius: 99px; font-size: 11px; padding: 1px 7px; font-weight: 700; }
+.app:not(.expanded) .item .lb, .app:not(.expanded) .item .badge, .app:not(.expanded) .brand div { display: none; }
+.collapse { margin: 8px 10px 12px; padding: 9px; border-radius: 10px; color: var(--dim); border: 1px dashed var(--line); font-size: 12px; }
+.collapse:hover { color: var(--text); }
+
+/* ── 상단바 ── */
+.top { display: flex; align-items: center; gap: 10px; padding: 0 16px; background: var(--bg2); border-bottom: 1px solid var(--line); z-index: 15; }
+.site { display: flex; align-items: center; gap: 8px; padding: 7px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); }
+.site select { background: none; color: var(--text); border: 0; font: inherit; font-weight: 600; outline: none; }
+.site select option { background: var(--panel-solid); }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 3px rgba(34,197,94,.2); }
+.search { flex: 1; max-width: 420px; display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--dim); text-align: left; }
+.search:hover { border-color: var(--accent); }
+.search kbd, .kbd { margin-left: auto; font-size: 11px; border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; color: var(--dim); font-family: inherit; }
+.sp { flex: 1; }
+.ibtn { position: relative; width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; color: var(--dim); border: 1px solid transparent; }
+.ibtn:hover, .ibtn.on { background: var(--accent-soft); color: var(--accent); }
+.ibtn .n { position: absolute; top: 2px; right: 1px; background: var(--bad); color: #fff; font-size: 10px; border-radius: 99px; padding: 0 5px; font-weight: 700; }
+.clock { color: var(--dim); font-variant-numeric: tabular-nums; font-size: 13px; padding: 0 6px; }
+
+/* ── 지도 영역 ── */
+.stage { position: relative; overflow: hidden; background: linear-gradient(160deg, var(--map-a), var(--map-b)); }
+.stage > svg.map { position: absolute; inset: 0; width: 100%; height: 100%; }
+.float { position: absolute; background: var(--panel); backdrop-filter: blur(14px); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
+.kpis { top: 14px; left: 14px; right: 380px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; background: none; border: 0; box-shadow: none; backdrop-filter: none; }
+.kpi { background: var(--panel); backdrop-filter: blur(14px); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; box-shadow: var(--shadow); cursor: pointer; transition: transform .15s, border-color .15s; }
+.kpi:hover { transform: translateY(-2px); border-color: var(--accent); }
+.kpi .t { color: var(--dim); font-size: 12px; display: flex; justify-content: space-between; align-items: center; }
+.kpi .v { font-size: 26px; font-weight: 700; margin: 2px 0 0; font-variant-numeric: tabular-nums; }
+.kpi .v small { font-size: 13px; color: var(--dim); font-weight: 500; margin-left: 3px; }
+.kpi .d { font-size: 12px; margin-top: 2px; display: flex; align-items: center; gap: 6px; }
+.up { color: var(--ok); } .down { color: var(--bad); } .flat { color: var(--dim); }
+.kpi svg { width: 100%; height: 30px; margin-top: 6px; display: block; }
+.pill { font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 600; }
+.pill.ok { background: rgba(34,197,94,.16); color: var(--ok); }
+.pill.warn { background: rgba(245,158,11,.16); color: var(--warn); }
+.pill.bad { background: rgba(239,68,68,.16); color: var(--bad); }
+
+.feed { top: 14px; right: 14px; bottom: 74px; width: 352px; display: flex; flex-direction: column; overflow: hidden; transition: transform .25s; }
+.feed.hide { transform: translateX(380px); }
+.feed header { padding: 14px 16px 10px; display: flex; align-items: center; gap: 8px; }
+.feed header b { font-size: 15px; }
+.chips { display: flex; gap: 6px; padding: 0 16px 10px; flex-wrap: wrap; }
+.chip { padding: 4px 10px; font-size: 12px; border-radius: 99px; border: 1px solid var(--line); color: var(--dim); }
+.chip.on { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+.list { overflow-y: auto; flex: 1; padding: 0 10px 10px; }
+.al { display: grid; grid-template-columns: 6px 1fr; gap: 10px; padding: 10px; border-radius: 10px; cursor: pointer; }
+.al:hover { background: var(--accent-soft); }
+.al i { border-radius: 4px; }
+.al b { font-size: 13px; display: block; }
+.al span { font-size: 12px; color: var(--dim); }
+.al .m { display: flex; gap: 8px; align-items: center; margin-top: 3px; }
+.al.new { animation: flash 1.6s ease-out; }
+@keyframes flash { from { background: rgba(239,68,68,.28); } to { background: transparent; } }
+
+.layers { left: 14px; bottom: 74px; padding: 8px; display: flex; flex-direction: column; gap: 2px; min-width: 168px; }
+.layers h4 { font-size: 11px; color: var(--dim); letter-spacing: .08em; padding: 4px 8px; font-weight: 600; }
+.lyr { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 8px; width: 100%; text-align: left; font-size: 13px; }
+.lyr:hover { background: var(--accent-soft); }
+.sw { width: 28px; height: 16px; border-radius: 99px; background: var(--line); position: relative; flex: none; transition: .15s; }
+.sw::after { content: ''; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: #fff; transition: .15s; }
+.lyr.on .sw { background: var(--accent); } .lyr.on .sw::after { left: 14px; }
+
+.legend { left: 200px; bottom: 74px; padding: 10px 14px; font-size: 12px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; max-width: calc(100% - 600px); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; color: var(--dim); }
+.legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+.timeline { left: 14px; right: 14px; bottom: 14px; height: 48px; display: flex; align-items: center; gap: 14px; padding: 0 16px; }
+.timeline input[type=range] { flex: 1; accent-color: var(--accent); }
+.timeline .lab { font-size: 12px; color: var(--dim); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.timeline .lab b { color: var(--text); }
+.play { width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-size: 12px; flex: none; }
+
+.card { top: 112px; left: 14px; width: 300px; padding: 16px; display: none; z-index: 5; }
+.card.show { display: block; animation: pop .18s ease-out; }
+@keyframes pop { from { opacity: 0; transform: translateY(6px); } }
+.card h3 { font-size: 16px; margin-bottom: 2px; }
+.card .sub { color: var(--dim); font-size: 12px; margin-bottom: 12px; }
+.card dl { display: grid; grid-template-columns: 84px 1fr; gap: 6px 8px; font-size: 13px; }
+.card dt { color: var(--dim); }
+.card .acts { display: flex; gap: 8px; margin-top: 14px; }
+.btn { padding: 7px 12px; border-radius: 9px; border: 1px solid var(--line); font-size: 13px; }
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn.pri { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn.pri:hover { color: #fff; filter: brightness(1.1); }
+.x { position: absolute; top: 10px; right: 12px; color: var(--dim); font-size: 18px; }
+
+/* 지도 요소 */
+.parcel { stroke: rgba(255,255,255,.35); stroke-width: 1; cursor: pointer; transition: opacity .15s, stroke-width .15s; }
+:root[data-theme="light"] .parcel { stroke: rgba(15,23,42,.35); }
+.parcel:hover { stroke: var(--accent); stroke-width: 2.5; }
+.parcel.sel { stroke: #fff; stroke-width: 3; }
+.hot { cursor: pointer; }
+.pulse { animation: pulse 1.8s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes pulse { 0% { transform: scale(.6); opacity: .9; } 100% { transform: scale(2.6); opacity: 0; } }
+.pvrow { fill: #1e3a8a; stroke: #60a5fa; stroke-width: .6; }
+.lbl { font-size: 11px; fill: var(--text); pointer-events: none; paint-order: stroke; stroke: var(--map-b); stroke-width: 3px; font-weight: 600; }
+
+/* 열화상 비교 */
+.compare { position: absolute; inset: 14px 14px 74px 14px; display: none; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow); }
+.compare.show { display: block; }
+.compare .pane { position: absolute; inset: 0; }
+.compare .pane svg { width: 100%; height: 100%; display: block; }
+.compare .top-pane { clip-path: inset(0 0 0 var(--cut, 50%)); }
+.cut { position: absolute; top: 0; bottom: 0; left: var(--cut, 50%); width: 3px; background: #fff; cursor: ew-resize; transform: translateX(-1.5px); box-shadow: 0 0 10px rgba(0,0,0,.5); }
+.cut::after { content: '⇆'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 38px; height: 38px; border-radius: 50%; background: #fff; color: #0f172a; display: grid; place-items: center; font-size: 18px; box-shadow: var(--shadow); }
+.tag { position: absolute; top: 12px; padding: 4px 10px; border-radius: 8px; background: rgba(0,0,0,.6); color: #fff; font-size: 12px; font-weight: 600; z-index: 2; }
+.tbar { position: absolute; right: 14px; bottom: 14px; width: 200px; padding: 10px 12px; font-size: 12px; z-index: 3; }
+.tbar .bar { height: 10px; border-radius: 6px; margin: 6px 0 4px; background: linear-gradient(90deg,#000,#3c0078,#a014a0,#eb6e3c,#fad214,#fff); }
+.tbar .r { display: flex; justify-content: space-between; color: var(--dim); }
+.hotlist { position: absolute; top: 14px; left: 14px; width: 260px; padding: 12px; z-index: 3; display: none; }
+.hotlist.show { display: block; }
+.hotlist h4 { font-size: 13px; margin-bottom: 8px; }
+.hr { display: flex; justify-content: space-between; padding: 6px 4px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+.hr:hover { background: var(--accent-soft); }
+.hr b { color: var(--bad); font-variant-numeric: tabular-nums; }
+
+/* 커맨드 팔레트 */
+.ov { position: fixed; inset: 0; background: rgba(2,6,23,.55); backdrop-filter: blur(3px); display: none; align-items: flex-start; justify-content: center; padding-top: 14vh; z-index: 100; }
+.ov.show { display: flex; }
+.pal { width: min(620px, 92vw); background: var(--panel-solid); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; animation: pop .15s ease-out; }
+.pal input { width: 100%; padding: 16px 18px; background: none; border: 0; border-bottom: 1px solid var(--line); color: var(--text); font: inherit; font-size: 16px; outline: none; }
+.pal ul { list-style: none; padding: 8px; max-height: 340px; overflow-y: auto; }
+.pal li { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; cursor: pointer; }
+.pal li.sel { background: var(--accent-soft); }
+.pal li .k { margin-left: auto; font-size: 11px; color: var(--dim); }
+.pal li .ic { width: 22px; text-align: center; }
+.pal footer { border-top: 1px solid var(--line); padding: 8px 14px; color: var(--dim); font-size: 12px; display: flex; gap: 14px; }
+
+.toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--panel-solid); border: 1px solid var(--line); padding: 10px 18px; border-radius: 12px; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: .25s; z-index: 120; }
+.toast.show { opacity: 1; transform: translateX(-50%); }
+
+/* 관제 월 모드 */
+body.wall .rail, body.wall .layers, body.wall .legend, body.wall .timeline { display: none; }
+body.wall .app { grid-template-columns: 1fr; }
+body.wall .rail { display: none; }
+body.wall .top { grid-column: 1; }
+body.wall .kpis { right: 14px; grid-template-columns: repeat(4, 1fr); }
+body.wall .kpi .v { font-size: 46px; }
+body.wall .kpi .t, body.wall .kpi .d { font-size: 15px; }
+body.wall .feed { top: 190px; bottom: 14px; width: 420px; }
+body.wall .feed .al b { font-size: 16px; }
+.wallhint { display: none; position: absolute; left: 14px; bottom: 14px; z-index: 4; padding: 8px 14px; font-size: 13px; color: var(--dim); }
+body.wall .wallhint { display: block; }
+
+.ribbon { position: fixed; right: 16px; bottom: 16px; z-index: 90; background: var(--accent); color: #fff; padding: 6px 12px; border-radius: 99px; font-size: 12px; font-weight: 600; opacity: .9; pointer-events: none; }
+
+@media (max-width: 1100px) {
+  .kpis { right: 14px; grid-template-columns: repeat(2, 1fr); top: 14px; }
+  .feed { top: 190px; width: 300px; }
+  .legend { display: none; }
+  .search span { display: none; }
+}
+@media (max-width: 720px) {
+  .app { grid-template-columns: 1fr; }
+  .rail { position: fixed; left: 0; top: 0; bottom: 0; width: 232px; transform: translateX(-100%); transition: transform .2s; }
+  .app.expanded .rail { transform: none; }
+  .feed, .layers { display: none; }
+  .clock, .site select { font-size: 12px; }
+  .kpis { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .kpi .v { font-size: 20px; } .kpi svg { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <aside class="rail" aria-label="주 메뉴">
+    <div class="brand"><div class="logo">P</div><div><b>PICT INDUSTRIAL</b><small>산업단지 통합 관제</small></div></div>
+    <nav class="nav" id="nav"></nav>
+    <button class="collapse" id="collapse" aria-label="메뉴 접기/펼치기">« 접기 / 펼치기</button>
+  </aside>
+
+  <header class="top">
+    <button class="ibtn" id="burger" aria-label="메뉴" style="display:none">☰</button>
+    <label class="site"><span class="dot"></span>
+      <select id="site" aria-label="단지 선택">
+        <option>동해산업단지</option><option>원주 단계산업단지</option><option>북평 (데모)</option><option>춘천 3D</option><option>강촌 테스트베드</option>
+      </select>
+    </label>
+    <button class="search" id="openPal"><span>🔍</span><span>필지 · 상호 · 핫스팟 · 메뉴 검색</span><kbd>Ctrl K</kbd></button>
+    <div class="sp"></div>
+    <span class="clock" id="clock"></span>
+    <button class="ibtn" id="bell" title="알림 센터" aria-label="알림 센터">🔔<span class="n" id="bellN">3</span></button>
+    <button class="ibtn" id="wall" title="관제 월 모드" aria-label="관제 월 모드">▣</button>
+    <button class="ibtn" id="theme" title="다크 / 라이트" aria-label="테마 전환">◐</button>
+  </header>
+
+  <main class="stage" id="stage">
+    <svg class="map" id="map" viewBox="0 0 1200 760" preserveAspectRatio="xMidYMid slice" role="img" aria-label="단지 지도 목업"></svg>
+
+    <section class="compare" id="compare" aria-label="가시광 열화상 비교">
+      <div class="pane"><span class="tag" style="left:12px">RGB 정사영상 · 2.6 cm</span><svg id="rgbSvg" viewBox="0 0 1200 760" preserveAspectRatio="xMidYMid slice"></svg></div>
+      <div class="pane top-pane" id="irPane"><span class="tag" style="right:12px">열화상 · 방사율 0.95</span><svg id="irSvg" viewBox="0 0 1200 760" preserveAspectRatio="xMidYMid slice"></svg></div>
+      <div class="cut" id="cut" role="slider" tabindex="0" aria-label="비교 슬라이더" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"></div>
+      <div class="float hotlist show" id="hotlist"><h4>🔥 핫스팟 TOP 5 <span class="pill bad">ΔT ≥ 20°C</span></h4><div id="hrows"></div></div>
+      <div class="float tbar"><b>온도 범위</b><div class="bar"></div><div class="r"><span>18 °C</span><span>79 °C</span></div></div>
+    </section>
+
+    <div class="kpis float" id="kpis"></div>
+
+    <aside class="float feed" id="feed" aria-label="이상 징후 알림 센터">
+      <header><b>알림 센터</b><span class="pill bad" id="liveCnt">실시간</span><span class="sp"></span><button class="x" style="position:static" id="closeFeed" aria-label="닫기">×</button></header>
+      <div class="chips" id="chips"></div>
+      <div class="list" id="alerts"></div>
+    </aside>
+
+    <div class="float layers" id="layers"><h4>레이어</h4></div>
+    <div class="float legend" id="legend"></div>
+
+    <div class="float card" id="card" role="dialog" aria-label="필지 상세">
+      <button class="x" id="cardX" aria-label="닫기">×</button>
+      <h3 id="cName">—</h3><div class="sub" id="cSub"></div>
+      <dl id="cDl"></dl>
+      <div class="acts"><button class="btn pri" data-toast="상호 기입 화면으로 이동 (목업)">상호 기입</button><button class="btn" data-toast="3D 트윈에서 보기 (목업)">3D로 보기</button></div>
+    </div>
+
+    <div class="float timeline" id="timeline">
+      <button class="play" id="play" aria-label="재생">▶</button>
+      <span class="lab">촬영 회차 <b id="tl">2026-09-16</b></span>
+      <input type="range" id="tlr" min="0" max="4" value="4" aria-label="촬영 회차">
+      <span class="lab">2026-05 ─ 2026-09 · 5회</span>
+    </div>
+    <div class="float wallhint">관제 월 모드 · Esc 로 종료 · 지도는 30초마다 위험 지점으로 자동 이동</div>
+  </main>
+</div>
+
+<div class="ov" id="ov" role="dialog" aria-label="커맨드 팔레트">
+  <div class="pal">
+    <input id="q" placeholder="무엇을 찾으세요? (예: 열화상, 동해화학, 필지 123)" autocomplete="off" aria-label="검색">
+    <ul id="res"></ul>
+    <footer><span>↑↓ 이동</span><span>Enter 선택</span><span>Esc 닫기</span></footer>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="ribbon">UI 목업 · 가상 데이터</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const NS = 'http://www.w3.org/2000/svg';
+function rng(seed) { return () => (seed = (seed * 16807) % 2147483647) / 2147483647; }
+function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 1800); }
+
+/* ── 메뉴 (14개 → 5그룹) ── */
+const GROUPS = [
+  ['상황', [['dashboard','◈','대시보드'],['safety','⚠','안전·재난',3],['env','☁','환경 모니터링']]],
+  ['자산', [['solar','☀','태양광 관리'],['thermal','♨','열화상 분석'],['facility','▣','시설·입주기업'],['drone','✈','드론 운용']]],
+  ['지도·자료', [['twin','⬢','3D 트윈'],['imagery','▦','영상자료'],['cad','▤','도면 중첩'],['parcel','⌖','주소·필지'],['lots','✎','상호 기입']]],
+  ['운영', [['report','≡','보고서'],['settings','⚙','설정']]],
+];
+let cur = 'dashboard';
+function buildNav() {
+  $('#nav').innerHTML = GROUPS.map(([g, items]) => `<div class="grp">${g}</div>` + items.map(([id, ic, lb, n]) =>
+    `<button class="item ${id === cur ? 'on' : ''}" data-id="${id}" title="${lb}"><span class="ic">${ic}</span><span class="lb">${lb}</span>${n ? `<span class="badge">${n}</span>` : ''}</button>`).join('')).join('');
+  document.querySelectorAll('.item').forEach(b => b.onclick = () => go(b.dataset.id));
+}
+function go(id) {
+  const all = GROUPS.flatMap(g => g[1]); const m = all.find(x => x[0] === id);
+  cur = id; buildNav();
+  const thermal = id === 'thermal';
+  $('#compare').classList.toggle('show', thermal);
+  $('#kpis').style.display = thermal ? 'none' : '';
+  $('#layers').style.display = $('#legend').style.display = thermal ? 'none' : '';
+  $('#feed').style.display = thermal ? 'none' : '';
+  $('#card').classList.remove('show');
+  if (!['dashboard', 'thermal'].includes(id)) toast(`「${m[2]}」 화면은 목업 범위 밖입니다. 대시보드·열화상 분석을 둘러보세요.`);
+  if (innerWidth <= 720) $('#app').classList.remove('expanded');
+}
+$('#collapse').onclick = () => $('#app').classList.toggle('expanded');
+$('#burger').onclick = () => $('#app').classList.toggle('expanded');
+if (innerWidth <= 720) $('#burger').style.display = '';
+if (innerWidth > 1300) $('#app').classList.add('expanded');
+
+/* ── 가상 지도 ── */
+const INDUSTRY = { 제조: '#60a5fa', 물류: '#a78bfa', 에너지: '#fbbf24', 화학: '#f87171', 미분양: '#64748b' };
+const NAMES = ['동해화학', '한빛정밀', '대성물류', '해양에너지', '삼보금속', '진양전자', '청솔식품', '유성기계', '동원포장', '새한산업', '태광소재', '미래냉동', '동해환경', '영진테크', '백두물산'];
+const R = rng(77), PARCELS = [];
+(function () {
+  const cols = 6, rows = 4, W = 1200, H = 760, mx = 90, my = 100, gw = (W - mx * 2 - 360) / cols, gh = (H - my * 2 - 40) / rows;
+  const ind = Object.keys(INDUSTRY);
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+    const x = mx + c * gw + (c > 2 ? 14 : 0), y = my + r * gh + (r > 1 ? 14 : 0), j = () => (R() - .5) * 9;
+    const kind = R() < .13 ? '미분양' : ind[Math.floor(R() * 4)];
+    const i = PARCELS.length;
+    PARCELS.push({ i, x, y, w: gw - 12, h: gh - 12, kind, name: kind === '미분양' ? '(미분양)' : NAMES[i % NAMES.length], area: Math.round(2400 + R() * 9000), pv: kind !== '미분양' && R() < .5, risk: R() < .16 ? (R() < .4 ? 'bad' : 'warn') : 'ok',
+      pts: [[x + j(), y + j()], [x + gw - 12 + j(), y + j()], [x + gw - 12 + j(), y + gh - 12 + j()], [x + j(), y + gh - 12 + j()]], pnu: `4215010${String(100 + i).padStart(3, '0')}1${String(1000 + i * 7).slice(-4)}0000` });
+  }
+})();
+const HOTS = [
+  { id: 'H-031', p: 8, dt: 41.2, label: '인버터 접속반' }, { id: 'H-027', p: 14, dt: 33.8, label: 'PV 스트링 7' },
+  { id: 'H-019', p: 3, dt: 27.5, label: '변압기' }, { id: 'H-044', p: 19, dt: 24.1, label: 'PV 셀 불량' }, { id: 'H-012', p: 11, dt: 21.6, label: '배전반' },
+];
+const state = { layers: { parcel: true, pv: true, hot: true, label: true, sensor: false }, filter: 'all', year: 4 };
+
+function el(n, a = {}, p) { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); p && p.appendChild(e); return e; }
+function drawMap() {
+  const s = $('#map'); s.innerHTML = '';
+  const g = el('g', {}, s);
+  el('path', { d: 'M0 380 H1200 M600 0 V760 M0 90 H1200 M0 690 H1200', stroke: 'var(--road)', 'stroke-width': 26, fill: 'none' }, g);
+  el('path', { d: 'M880 0 Q930 380 1060 760', stroke: 'rgba(56,189,248,.22)', 'stroke-width': 40, fill: 'none' }, g);
+  if (state.layers.parcel) PARCELS.forEach(p => {
+    const dim = state.filter !== 'all' && state.filter !== p.kind;
+    const poly = el('polygon', { points: p.pts.map(q => q.join(',')).join(' '), fill: INDUSTRY[p.kind], 'fill-opacity': dim ? .08 : .55, class: 'parcel' + (sel === p.i ? ' sel' : ''), tabindex: 0, role: 'button', 'aria-label': `${p.name} ${p.kind}` }, g);
+    poly.onclick = () => openCard(p.i); poly.onkeydown = e => (e.key === 'Enter') && openCard(p.i);
+    if (state.layers.pv && p.pv) for (let k = 0; k < 4; k++) el('rect', { x: p.x + 14, y: p.y + 14 + k * 11, width: p.w * .55, height: 7, class: 'pvrow' }, g);
+    if (state.layers.label && !dim) { const t = el('text', { x: p.x + p.w / 2, y: p.y + p.h - 8, 'text-anchor': 'middle', class: 'lbl' }, g); t.textContent = p.name; }
+  });
+  if (state.layers.hot) HOTS.forEach(h => {
+    const p = PARCELS[h.p], cx = p.x + p.w * .7, cy = p.y + p.h * .35;
+    const grp = el('g', { class: 'hot', tabindex: 0, role: 'button', 'aria-label': `핫스팟 ${h.id}` }, g);
+    el('circle', { cx, cy, r: 10, fill: 'rgba(239,68,68,.5)', class: 'pulse' }, grp);
+    el('circle', { cx, cy, r: 6, fill: '#ef4444', stroke: '#fff', 'stroke-width': 2 }, grp);
+    grp.onclick = () => { openCard(h.p); toast(`${h.id} · ${h.label} · ΔT +${h.dt} °C`); };
+  });
+  if (state.layers.sensor) [[180, 200], [520, 560], [900, 150], [760, 640]].forEach(([x, y]) => { el('circle', { cx: x, cy: y, r: 7, fill: '#22c55e', stroke: '#fff', 'stroke-width': 2 }, g); });
+}
+
+/* ── 레이어 / 범례 ── */
+const LAYERS = [['parcel', '필지 (업종별)'], ['pv', '태양광 어레이'], ['hot', '열화상 핫스팟'], ['label', '상호 라벨'], ['sensor', '환경 센서']];
+function buildLayers() {
+  $('#layers').innerHTML = '<h4>레이어</h4>' + LAYERS.map(([k, l]) => `<button class="lyr ${state.layers[k] ? 'on' : ''}" data-k="${k}" role="switch" aria-checked="${state.layers[k]}"><span class="sw"></span>${l}</button>`).join('');
+  document.querySelectorAll('.lyr').forEach(b => b.onclick = () => { state.layers[b.dataset.k] = !state.layers[b.dataset.k]; buildLayers(); drawMap(); });
+}
+function buildLegend() {
+  $('#legend').innerHTML = '<b style="font-size:12px">업종 필터</b>' + Object.entries(INDUSTRY).map(([k, c]) =>
+    `<span style="cursor:pointer;${state.filter !== 'all' && state.filter !== k ? 'opacity:.4' : ''}" data-k="${k}"><i style="background:${c}"></i>${k}</span>`).join('') + '<span style="cursor:pointer" data-k="all">전체</span>';
+  document.querySelectorAll('#legend [data-k]').forEach(s => s.onclick = () => { state.filter = state.filter === s.dataset.k ? 'all' : s.dataset.k; buildLegend(); drawMap(); });
+}
+
+/* ── 필지 카드 ── */
+let sel = -1;
+function openCard(i) {
+  sel = i; const p = PARCELS[i]; drawMap();
+  $('#cName').textContent = p.name; $('#cSub').textContent = `PNU ${p.pnu}`;
+  const rk = { ok: ['정상', 'ok'], warn: ['주의', 'warn'], bad: ['심각', 'bad'] }[p.risk];
+  $('#cDl').innerHTML = `<dt>업종</dt><dd>${p.kind}</dd><dt>면적</dt><dd>${p.area.toLocaleString()} ㎡</dd><dt>태양광</dt><dd>${p.pv ? '설치 (' + Math.round(p.area / 40) + ' kW)' : '없음'}</dd><dt>상태</dt><dd><span class="pill ${rk[1]}">${rk[0]}</span></dd><dt>최근 점검</dt><dd>2026-09-16 드론</dd>`;
+  $('#card').classList.add('show');
+}
+$('#cardX').onclick = () => { sel = -1; $('#card').classList.remove('show'); drawMap(); };
+
+/* ── KPI ── */
+function spark(vals, color) {
+  const mx = Math.max(...vals), mn = Math.min(...vals), W = 200, H = 30;
+  const pts = vals.map((v, i) => `${(i / (vals.length - 1) * W).toFixed(1)},${(H - 3 - (v - mn) / (mx - mn || 1) * (H - 6)).toFixed(1)}`).join(' ');
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round"/></svg>`;
+}
+const KPI = [
+  { t: '현재 발전량', v: '1,284', u: 'kW', d: '▲ 6.2%', c: 'up', s: [3, 5, 4, 7, 9, 12, 15, 14, 16, 13], col: '#22c55e', pill: '' },
+  { t: '열화상 이상', v: '5', u: '건', d: '▲ 2 (전주 대비)', c: 'down', s: [2, 2, 3, 3, 4, 3, 4, 5, 5, 5], col: '#ef4444', pill: '<span class="pill bad">조치 필요</span>' },
+  { t: '입주 가동률', v: '87.4', u: '%', d: '― 변동 없음', c: 'flat', s: [86, 87, 87, 88, 87, 87, 88, 87, 87, 87], col: '#38bdf8', pill: '' },
+  { t: '센서 정상', v: '42/44', u: '', d: '▼ 2 오프라인', c: 'down', s: [44, 44, 44, 43, 44, 44, 43, 42, 42, 42], col: '#f59e0b', pill: '<span class="pill warn">주의</span>' },
+];
+function buildKpi() {
+  $('#kpis').innerHTML = KPI.map((k, i) => `<div class="kpi" data-i="${i}" tabindex="0" role="button"><div class="t">${k.t}${k.pill}</div><div class="v"><span class="cnt">${k.v}</span><small>${k.u}</small></div><div class="d ${k.c}">${k.d}</div>${spark(k.s, k.col)}</div>`).join('');
+  document.querySelectorAll('.kpi').forEach(k => k.onclick = () => toast(`${KPI[k.dataset.i].t} 상세 화면으로 이동 (목업)`));
+}
+
+/* ── 알림 센터 ── */
+const SEV = { bad: ['심각', '#ef4444'], warn: ['주의', '#f59e0b'], info: ['정보', '#38bdf8'] };
+const ALERTS = [
+  { s: 'bad', t: '인버터 접속반 과열 +41.2 °C', w: '동해화학 · H-031', m: '방금', h: 8 },
+  { s: 'bad', t: 'PV 스트링 7 출력 저하', w: '해양에너지 · H-027', m: '4분 전', h: 14 },
+  { s: 'warn', t: '환경센서 S-18 응답 없음', w: '북측 게이트', m: '12분 전', h: 2 },
+  { s: 'warn', t: '변압기 온도 상승 추세', w: '삼보금속 · H-019', m: '31분 전', h: 3 },
+  { s: 'info', t: '드론 임무 완료 · 열화상 순찰', w: 'Dock-01 · 214장', m: '1시간 전', h: 5 },
+  { s: 'info', t: '신규 정사영상 처리 완료', w: '0916_동해산업단지', m: '3시간 전', h: 0 },
+];
+function buildAlerts(flash) {
+  const f = $('#chips').dataset.f || 'all';
+  $('#chips').innerHTML = [['all', '전체'], ['bad', '심각'], ['warn', '주의'], ['info', '정보']].map(([k, l]) => `<button class="chip ${f === k ? 'on' : ''}" data-f="${k}">${l}</button>`).join('');
+  $('#chips').dataset.f = f;
+  document.querySelectorAll('.chip').forEach(c => c.onclick = () => { $('#chips').dataset.f = c.dataset.f; buildAlerts(); });
+  $('#alerts').innerHTML = ALERTS.filter(a => f === 'all' || a.s === f).map((a, i) => `<div class="al ${flash && i === 0 ? 'new' : ''}" data-h="${a.h}" tabindex="0"><i style="background:${SEV[a.s][1]}"></i><div><b>${a.t}</b><span>${a.w}</span><div class="m"><span class="pill ${a.s === 'info' ? '' : a.s}" style="${a.s === 'info' ? 'background:rgba(56,189,248,.16);color:#38bdf8' : ''}">${SEV[a.s][0]}</span><span>${a.m}</span></div></div></div>`).join('');
+  document.querySelectorAll('.al').forEach(a => a.onclick = () => openCard(+a.dataset.h));
+}
+$('#bell').onclick = () => { $('#feed').classList.toggle('hide'); };
+$('#closeFeed').onclick = () => $('#feed').classList.add('hide');
+setTimeout(() => { ALERTS.unshift({ s: 'bad', t: '배전반 온도 급상승 +21.6 °C', w: '유성기계 · H-012', m: '방금', h: 11 }); buildAlerts(true); $('#bellN').textContent = 4; toast('🔴 새 알림 · 배전반 온도 급상승'); }, 6000);
+
+/* ── 타임라인 ── */
+const DATES = ['2026-05-14', '2026-06-20', '2026-07-25', '2026-08-18', '2026-09-16'];
+$('#tlr').oninput = e => { $('#tl').textContent = DATES[e.target.value]; PARCELS.forEach(p => p.pv = p.pv); drawMap(); };
+let timer = null;
+$('#play').onclick = () => {
+  if (timer) { clearInterval(timer); timer = null; $('#play').textContent = '▶'; return; }
+  $('#play').textContent = '❚❚'; const r = $('#tlr'); r.value = 0; r.oninput({ target: r });
+  timer = setInterval(() => { if (+r.value >= 4) { clearInterval(timer); timer = null; $('#play').textContent = '▶'; return; } r.value = +r.value + 1; r.oninput({ target: r }); }, 900);
+};
+
+/* ── 열화상 비교 ── */
+function drawCompare() {
+  const rgb = $('#rgbSvg'), ir = $('#irSvg'); rgb.innerHTML = ir.innerHTML = '';
+  const ground = el('rect', { width: 1200, height: 760, fill: '#3b4a3a' }, rgb); const gR = rng(5);
+  for (let i = 0; i < 260; i++) el('circle', { cx: gR() * 1200, cy: gR() * 760, r: 6 + gR() * 24, fill: `rgba(${70 + gR() * 40},${90 + gR() * 40},${60 + gR() * 30},.35)` }, rgb);
+  el('rect', { width: 1200, height: 760, fill: '#0a0414' }, ir);
+  el('path', { d: 'M0 380 H1200 M600 0 V760', stroke: '#8c8c8c', 'stroke-width': 26, fill: 'none', opacity: .7 }, rgb);
+  PARCELS.forEach(p => {
+    el('rect', { x: p.x + 8, y: p.y + 8, width: p.w - 16, height: p.h - 16, fill: p.kind === '미분양' ? '#6b7a5a' : '#9aa3ad', stroke: '#6b7280', 'stroke-width': 1 }, rgb);
+    if (p.pv) for (let k = 0; k < 4; k++) el('rect', { x: p.x + 14, y: p.y + 14 + k * 11, width: p.w * .55, height: 7, fill: '#1e3a8a', stroke: '#93c5fd', 'stroke-width': .5 }, rgb);
+    const warm = p.kind === '미분양' ? 0 : p.kind === '화학' ? .5 : p.kind === '에너지' ? .42 : .3;
+    el('rect', { x: p.x + 8, y: p.y + 8, width: p.w - 16, height: p.h - 16, fill: `rgb(${60 + warm * 220},${10 + warm * 70},${100 - warm * 60})`, opacity: .85 }, ir);
+  });
+  const defs = el('defs', {}, ir), rg = el('radialGradient', { id: 'hg' }, defs);
+  [['0', '#fff'], ['.35', '#fff27a'], ['.7', '#f08c1e'], ['1', 'rgba(160,20,160,0)']].forEach(([o, c]) => el('stop', { offset: o, 'stop-color': c }, rg));
+  HOTS.forEach(h => { const p = PARCELS[h.p], cx = p.x + p.w * .7, cy = p.y + p.h * .35; el('circle', { cx, cy, r: 24 + h.dt * .5, fill: 'url(#hg)' }, ir); el('circle', { cx, cy, r: 5, fill: 'none', stroke: '#fff', 'stroke-width': 1.5 }, rgb); });
+  $('#hrows').innerHTML = HOTS.map(h => `<div class="hr" data-h="${h.p}"><span>${h.id} · ${h.label}</span><b>+${h.dt}</b></div>`).join('');
+  document.querySelectorAll('.hr').forEach(r => r.onclick = () => toast('해당 핫스팟으로 줌인 (목업)'));
+}
+(function () {
+  const c = $('#compare'), cut = $('#cut'); let drag = false;
+  const set = x => { const r = c.getBoundingClientRect(), pct = Math.max(2, Math.min(98, (x - r.left) / r.width * 100)); c.style.setProperty('--cut', pct + '%'); cut.setAttribute('aria-valuenow', Math.round(pct)); };
+  cut.onpointerdown = e => { drag = true; cut.setPointerCapture(e.pointerId); };
+  cut.onpointermove = e => drag && set(e.clientX); cut.onpointerup = () => drag = false;
+  cut.onkeydown = e => { const v = +cut.getAttribute('aria-valuenow'); if (e.key === 'ArrowLeft') set(c.getBoundingClientRect().left + (v - 4) / 100 * c.clientWidth); if (e.key === 'ArrowRight') set(c.getBoundingClientRect().left + (v + 4) / 100 * c.clientWidth); };
+})();
+
+/* ── 커맨드 팔레트 ── */
+const CMDS = [
+  ...GROUPS.flatMap(g => g[1].map(([id, ic, lb]) => ({ ic, lb, k: '메뉴 · ' + g[0], run: () => go(id) }))),
+  ...PARCELS.filter(p => p.kind !== '미분양').map(p => ({ ic: '⌖', lb: p.name, k: '필지 · ' + p.kind, run: () => { go('dashboard'); openCard(p.i); } })),
+  ...HOTS.map(h => ({ ic: '🔥', lb: `${h.id} ${h.label}`, k: `핫스팟 · +${h.dt}°C`, run: () => { go('dashboard'); openCard(h.p); } })),
+  { ic: '◐', lb: '테마 전환 (다크/라이트)', k: '동작', run: () => $('#theme').click() },
+  { ic: '▣', lb: '관제 월 모드 시작', k: '동작', run: () => $('#wall').click() },
+];
+let ci = 0, cl = [];
+function renderPal() {
+  const q = $('#q').value.trim().toLowerCase();
+  cl = CMDS.filter(c => !q || (c.lb + c.k).toLowerCase().includes(q)).slice(0, 12); ci = Math.min(ci, Math.max(0, cl.length - 1));
+  $('#res').innerHTML = cl.map((c, i) => `<li class="${i === ci ? 'sel' : ''}" data-i="${i}"><span class="ic">${c.ic}</span>${c.lb}<span class="k">${c.k}</span></li>`).join('') || '<li style="color:var(--dim)">결과가 없습니다</li>';
+  document.querySelectorAll('#res li[data-i]').forEach(li => li.onclick = () => runCmd(+li.dataset.i));
+}
+function runCmd(i) { const c = cl[i]; closePal(); c && c.run(); }
+function openPal() { $('#ov').classList.add('show'); $('#q').value = ''; ci = 0; renderPal(); setTimeout(() => $('#q').focus(), 0); }
+function closePal() { $('#ov').classList.remove('show'); }
+$('#openPal').onclick = openPal; $('#ov').onclick = e => e.target.id === 'ov' && closePal();
+$('#q').oninput = () => { ci = 0; renderPal(); };
+$('#q').onkeydown = e => {
+  if (e.key === 'ArrowDown') { ci = Math.min(cl.length - 1, ci + 1); renderPal(); e.preventDefault(); }
+  if (e.key === 'ArrowUp') { ci = Math.max(0, ci - 1); renderPal(); e.preventDefault(); }
+  if (e.key === 'Enter') runCmd(ci);
+};
+addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openPal(); }
+  if (e.key === 'Escape') { closePal(); if (document.body.classList.contains('wall')) $('#wall').click(); }
+});
+
+/* ── 테마 / 관제 월 / 시계 ── */
+$('#theme').onclick = () => { const r = document.documentElement; r.dataset.theme = r.dataset.theme === 'light' ? 'dark' : 'light'; };
+let wallT = null;
+$('#wall').onclick = () => {
+  const on = document.body.classList.toggle('wall'); $('#wall').classList.toggle('on', on);
+  $('#feed').classList.remove('hide'); go('dashboard');
+  clearInterval(wallT);
+  if (on) { let k = 0; wallT = setInterval(() => openCard(HOTS[k++ % HOTS.length].p), 4000); openCard(HOTS[0].p); } else { $('#card').classList.remove('show'); sel = -1; drawMap(); }
+};
+function tick() { const d = new Date(); $('#clock').textContent = d.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'short' }) + ' ' + d.toLocaleTimeString('ko-KR', { hour12: false }); }
+setInterval(tick, 1000); tick();
+document.querySelectorAll('[data-toast]').forEach(b => b.onclick = () => toast(b.dataset.toast));
+
+buildNav(); buildLayers(); buildLegend(); buildKpi(); buildAlerts(); drawMap(); drawCompare();
+</script>
+</body>
+</html>

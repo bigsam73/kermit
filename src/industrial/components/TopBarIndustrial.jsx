@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import useStore from '../../store/useStore';
 import useIndustrialStore from '../store';
 import { APP_NAME, APP_SUBTITLE } from '../constants';
+import useUiStore from '../uiStore';
+import { Icon } from '../icons';
 import { fmt } from './ui';
 
 export default function TopBarIndustrial() {
@@ -21,6 +23,15 @@ export default function TopBarIndustrial() {
     const toggleGlobeViewMode = useStore((s) => s.toggleGlobeViewMode);
     const toggleSysTerminal = useStore((s) => s.toggleSysTerminal);
     const appIsActive = useStore((s) => s.appIsActive);
+    const alerts = useIndustrialStore((s) => s.alerts);
+    const openAlerts = alerts.filter((a) => !a.acknowledged).length;
+    const alertCenterOpen = useUiStore((s) => s.alertCenterOpen);
+    const toggleAlertCenter = useUiStore((s) => s.toggleAlertCenter);
+    const styleMenuOpen = useUiStore((s) => s.styleMenuOpen);
+    const toggleStyleMenu = useUiStore((s) => s.toggleStyleMenu);
+    const openPalette = useUiStore((s) => s.openPalette);
+    const wall = useUiStore((s) => s.wall);
+    const setWall = useUiStore((s) => s.setWall);
     const running = jobs.filter((j) => j.status === 'running' || j.status === 'queued').length;
 
     useEffect(() => {
@@ -59,9 +70,13 @@ export default function TopBarIndustrial() {
                         </div>
                     )}
                     <div className="glass-panel gi-chip" title="실시간 텔레메트리 연결 상태">{live ? <span style={{ color: '#22c55e' }}>● LIVE</span> : <span style={{ color: '#f59e0b' }}>○ 연결 대기</span>}{running > 0 && <span>· 작업 <b>{running}</b></span>}</div>
-                    <div className={`glass-panel gi-chip is-clickable ${layerPanelOpen ? 'border-electric-blue/60' : ''}`} onClick={toggleLayerPanel} title="데이터 레이어 패널">피드 <b>{activeFeedCount}</b></div>
-                    <div className="glass-panel gi-chip is-clickable" onClick={toggleGlobeViewMode} title="3D 지구본 / 2D 지도 전환">{globeViewMode === 'planet' ? '3D' : '2D'}</div>
-                    <div className="glass-panel gi-chip is-clickable" onClick={toggleSysTerminal} title="시스템 로그">LOG</div>
+                    <button type="button" className="glass-panel gi-chip is-clickable" onClick={openPalette} title="검색 · 빠른 이동"><Icon name="search" size={13} /> 검색 <kbd>Ctrl K</kbd></button>
+                    <button type="button" className={`glass-panel gi-chip is-clickable ${alertCenterOpen ? 'is-on' : ''}`} onClick={toggleAlertCenter} title="알림 센터"><Icon name="bell" size={13} /> 알림 {openAlerts > 0 && <span className="gi-bell-n">{openAlerts}</span>}</button>
+                    <button type="button" className={`glass-panel gi-chip is-clickable ${styleMenuOpen ? 'is-on' : ''}`} onClick={toggleStyleMenu} title="화면 스타일 — 테마 · 강조색 · 밀도 · 메뉴 형태"><Icon name="palette" size={13} /> 화면</button>
+                    <button type="button" className={`glass-panel gi-chip is-clickable ${wall ? 'is-on' : ''}`} onClick={() => setWall(!wall)} title="관제 월 모드 (전체화면 · 큰 글씨 · 자동 순회)"><Icon name="wall" size={13} /> 월</button>
+                    <div className={`glass-panel gi-chip is-clickable is-hide-wall ${layerPanelOpen ? 'border-electric-blue/60' : ''}`} onClick={toggleLayerPanel} title="데이터 레이어 패널">피드 <b>{activeFeedCount}</b></div>
+                    <div className="glass-panel gi-chip is-clickable is-hide-wall" onClick={toggleGlobeViewMode} title="3D 지구본 / 2D 지도 전환">{globeViewMode === 'planet' ? '3D' : '2D'}</div>
+                    <div className="glass-panel gi-chip is-clickable is-hide-wall" onClick={toggleSysTerminal} title="시스템 로그">LOG</div>
                 </div>
             </div>
         </div>

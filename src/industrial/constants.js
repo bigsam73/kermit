@@ -19,6 +19,14 @@ export const MENUS = [
     { id: 'settings', label: '설정', icon: '⚙', desc: '단지 · 데이터 경로 · 시스템' },
 ];
 
+// 사이드바 그룹 (MENUS 의 id 를 4개 그룹으로 묶음)
+export const MENU_GROUPS = [
+    { label: '상황', ids: ['dashboard', 'safety', 'env'] },
+    { label: '자산', ids: ['solar', 'thermal', 'facility', 'drone'] },
+    { label: '지도·자료', ids: ['twin', 'imagery', 'cad', 'parcel', 'lots'] },
+    { label: '운영', ids: ['report', 'settings'] },
+];
+
 export const INDUSTRIAL_LAYER_KEYS = ['sites', 'facilities', 'solarPanels', 'thermalHotspots', 'imagery', 'tiles3d', 'droneOps', 'sensors'];
 
 export const FACILITY_COLORS = {

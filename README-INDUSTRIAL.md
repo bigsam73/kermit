@@ -158,3 +158,13 @@ server/
 `node tools/screenshot.mjs http://localhost:3200/ out.png` — 설치된 Chrome(headless)으로 접속해 콘솔 오류를 출력하고 캡처합니다.
 `STEPS='eval:window.__gi.getState().setMenu("thermal")|wait:3000|shot:a.png'` 형식으로 메뉴 전환·캡처를 이어서 실행할 수 있습니다.
 캡처 예시는 `docs/screenshots/` 에 있습니다.
+
+## 화면 스타일 / UI 개편 (2026-10-30)
+- 상단 `🎨 화면` 칩 → **화면 스타일 메뉴**: 프리셋(관제실·현장 점검·대형 모니터·데이터 작업), 테마(다크/라이트/고대비), 강조색 5종, 메뉴 형태(그룹/아이콘 레일/아이콘만), 정보 밀도. 선택은 브라우저 localStorage(`gi:ui`)에 저장. 구현: `src/industrial/uiStore.js`(상태·`<html data-gi-*>` 적용) + `src/industrial/theme.css`(토큰). `industrial.css` 의 색은 모두 `--gi-*` 토큰을 참조하므로 새 화면도 토큰만 쓰면 테마가 따라간다.
+- 사이드바 4그룹(상황/자산/지도·자료/운영, `constants.js MENU_GROUPS`). **Ctrl+K 커맨드 팔레트**(메뉴·단지·상호·시설·핫스팟·동작 검색, `CommandPalette.jsx`).
+- **알림 센터**(`🔔 알림`, `AlertCenter.jsx`): 심각도 필터·위치 이동·확인 처리. KPI 카드에 PV 출력 스파크라인·추세·"조치 필요" 표시(`store.pvHistory`).
+- **관제 월 모드**(`▣ 월`, `WallRunner.jsx`): 전체화면·큰 글씨·심각 핫스팟/알림 20초 순회, Esc 종료.
+- 목업: `docs/ui-mockup/index.html`. 미적용 제안: 촬영 회차 타임라인, RGB/열화상 슬라이더 비교.
+- 대시보드 패턴 적용(2026-10-31, GitHub dashboard 토픽의 Tabler·Grafana·AdminLTE 디자인 패턴 참고, 코드 복사 없이 재구현): `ui.jsx`의 `StatCard`(아이콘 칩+증감+스파크라인), `StackBar`(누적 막대), `ThresholdBar`(임계값 색 게이지), 상태 pill 줄, 알림 활동 타임라인. 스타일은 `theme.css` 하단. 다른 메뉴 화면도 이 컴포넌트로 교체 가능.
+- 모든 메뉴 화면에 같은 패턴 적용(2026-10-31): `Stat`은 자동으로 `StatCard`(키워드로 lucide 아이콘 자동 선택, `icons.jsx autoIconName`)로 렌더링, `Section` 제목도 아이콘 자동. 열화상은 심각도 누적 막대, 안전은 알림 타임라인.
+- MotionSites 스킬(github.com/Motionsites-AI/claude-skill)의 craft/surfaces/motion 규칙 적용: `theme-motion.css` — 리퀴드 글래스 재질(그라데이션 림), ease-out-expo 입장 모션(스태거), 숫자 카운트업(`AnimNumber`), 호버·눌림 규칙, reduced-motion 분기. 화면 스타일 메뉴의 "패널 재질"/"모션"에서 끄고 켠다(data-gi-material / data-gi-motion). 스킬 자체(랜딩페이지 제작용·영상 에셋)는 설치하지 않고 디자인 규칙만 반영.

@@ -2,7 +2,7 @@
 import React, { useMemo, useState } from 'react';
 import useIndustrialStore from '../store';
 import { api } from '../api';
-import { Section, Badge, Button, Field, Input, Select, Stat, Table, fmt, fmtTime } from '../components/ui';
+import { Section, Badge, Button, Field, Input, Select, Stat, StackBar, Table, fmt, fmtTime } from '../components/ui';
 import { SEVERITY_COLORS, SEVERITY_LABELS, THERMAL_PALETTES } from '../constants';
 
 export default function ThermalView() {
@@ -118,6 +118,7 @@ export default function ThermalView() {
                 {ds?.thermalStats && <div className="gi-muted">영상 통계: 최소 {ds.thermalStats.min}° · 중앙값 {ds.thermalStats.median}° · 평균 {ds.thermalStats.mean}° · 최대 {ds.thermalStats.max}°</div>}
             </Section>
 
+            <StackBar items={['critical', 'high', 'medium', 'low'].map((k) => ({ label: SEVERITY_LABELS[k], value: bySev(k), color: SEVERITY_COLORS[k] }))} />
             <div className="gi-grid-4">
                 <Stat label="심각" value={bySev('critical')} tone="bad" onClick={() => setFilter('critical')} />
                 <Stat label="높음" value={bySev('high')} tone="warn" onClick={() => setFilter('high')} />

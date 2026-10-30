@@ -17,7 +17,13 @@ import SitePanel from './industrial/components/SitePanel';
 import DetailCard from './industrial/components/DetailCard';
 import AlertBanner from './industrial/components/AlertBanner';
 import KpiStrip, { ThermalLegend } from './industrial/components/KpiStrip';
+import StyleMenu from './industrial/components/StyleMenu';
+import CommandPalette from './industrial/components/CommandPalette';
+import AlertCenter from './industrial/components/AlertCenter';
+import WallRunner from './industrial/components/WallRunner';
 import './industrial/industrial.css';
+import './industrial/theme.css';
+import './industrial/theme-motion.css';
 
 export default function App() {
     const activeShader = useStore((s) => s.activeShader);
@@ -106,6 +112,10 @@ export default function App() {
             <RenderBoundary name="site-panel"><SitePanel /></RenderBoundary>
             <RenderBoundary name="kpi-strip"><KpiStrip /></RenderBoundary>
             <RenderBoundary name="detail-card"><DetailCard /></RenderBoundary>
+            <RenderBoundary name="alert-center"><AlertCenter /></RenderBoundary>
+            <RenderBoundary name="style-menu"><StyleMenu /></RenderBoundary>
+            <RenderBoundary name="command-palette"><CommandPalette /></RenderBoundary>
+            <RenderBoundary name="wall-runner"><WallRunner /></RenderBoundary>
             <RenderBoundary name="thermal-legend"><ThermalLegend /></RenderBoundary>
             <RenderBoundary name="layer-panel"><LayerPanel /></RenderBoundary>
             <RenderBoundary name="shader-toolbar"><ShaderToolbar /></RenderBoundary>
